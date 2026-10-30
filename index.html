@@ -659,7 +659,7 @@ const PFX={
 function photoScene(S,svgFn){return(s,t,c)=>{const n=bgName(S,c);if(!IMG_OK[n])return svgFn(s,t,c);const f=PFX[S.id](s,t,c);
  return`<div class="photo ${f.sway?'shakeb':''}" style="background-image:url(${IP(n)});${f.filter?'filter:'+f.filter:''}">${f.tint?`<div class="tint" style="background:${f.tint}"></div>`:''}${f.svg?`<svg viewBox="0 0 300 180" preserveAspectRatio="none" aria-hidden="true">${f.svg}</svg>`:''}<div class="pchips">${f.chips.map(x=>`<span>${x}</span>`).join('')}</div></div>`;};}
 function optImg(S,st,o){const n=st.key==='breed'?`breed_${S.id}_${o.id}`:st.key==='seed'?`breed_madai_${o.id}`:st.key==='method'?`bg_madai_${o.id}`:st.key==='house'?`bg_hen_${o.id}`:'';return n?`<img class="oimg" src="${IP(n)}" alt="" loading="lazy" onerror="this.remove()">`:'';}
-TOMATO.scene=photoScene(TOMATO,sceneTomato);MADAI.scene=photoScene(MADAI,sceneMadai);HEN.scene=photoScene(HEN,sceneHen);
+TOMATO.scene=sceneTomato;MADAI.scene=sceneMadai;HEN.scene=sceneHen;
 TOMATO.icon='🍅';MADAI.icon='🐟';HEN.icon='🐔';
 function banner(big,small,color){const b=document.createElement('div');b.className='banner';b.innerHTML=`<div style="--c:${color||'#23905c'}"><b>${big}</b><small>${small||''}</small></div>`;document.body.appendChild(b);setTimeout(()=>b.remove(),1500);}
 function confetti(){const cs=['#ffd34d','#ff7a59','#4cc38a','#4aa3df','#b06ad9','#ff9fc4'];for(let i=0;i<70;i++){const d=document.createElement('div');d.className='confetti';d.style.left=Math.random()*100+'vw';d.style.background=cs[i%cs.length];d.style.animationDuration=(2.2+Math.random()*2)+'s';d.style.animationDelay=(Math.random()*.8)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),5200);}}
