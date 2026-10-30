@@ -195,7 +195,7 @@ const IMGDATA={"bg_hen_barn": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA
 /* ===== 設定：先生用 =====
    Google Apps Script のウェブアプリURLを '' の中に貼り付けてください。
    （URLの末尾に ?gas=URL を付けて開いても設定できます） */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbz1UhknPTwIbp4X1SKVapY20HcQvc-wqbvM9AIvK74_iN1PgoVwjJ_uuVfBCLwdLgKkLQ/exec';
+const GAS_URL = 'https://script.google.com/a/macros/fuku-c.ed.jp/s/AKfycbz1UhknPTwIbp4X1SKVapY20HcQvc-wqbvM9AIvK74_iN1PgoVwjJ_uuVfBCLwdLgKkLQ/exec';
 
 /* ===== 共通 ===== */
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -573,12 +573,16 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&
 function who(){$('who').textContent=ST.name?`${ST.kumi}組 ${ST.ban}番 ${ST.name}`:'';}
 function counts(id){const c=LS.get('bio_count',{});return c[id]||{play:0,over:0};}
 function bump(id,k){const c=LS.get('bio_count',{});c[id]=c[id]||{play:0,over:0};c[id][k]++;LS.set('bio_count',c);}
-async function send(p){const url=gas();const payload={...p,kumi:ST.kumi,ban:ST.ban,name:ST.name};
+let LAST=null;
+function postForm(url,data){const f=document.createElement('form');f.method='POST';f.action=url;f.target='_blank';f.acceptCharset='UTF-8';f.style.display='none';const i=document.createElement('input');i.type='hidden';i.name='payload';i.value=JSON.stringify(data);f.appendChild(i);document.body.appendChild(f);f.submit();setTimeout(()=>f.remove(),1500);}
+function addResend(id){if(!LAST||!gas()||!$(id))return;const b=document.createElement('button');b.className='sub';b.type='button';b.textContent='もう一度送る';b.style.marginLeft='8px';b.onclick=()=>postForm(gas(),LAST);$(id).appendChild(document.createElement('br'));$(id).appendChild(b);}
+async function send(p){const url=gas();const payload={...p,kumi:ST.kumi,ban:ST.ban,name:ST.name};const SL=LS.get('bio_sent',[]);SL.push(payload);LS.set('bio_sent',SL.slice(-30));
+ if(url){try{postForm(url,payload);LAST=payload;return'ok';}catch(e){}}
  if(!url){const q=LS.get('bio_queue',[]);q.push(payload);LS.set('bio_queue',q);return'local';}
  try{await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});return'ok';}
  catch(e){const q=LS.get('bio_queue',[]);q.push(payload);LS.set('bio_queue',q);return'fail';}}
-async function flush(){const q=LS.get('bio_queue',[]);if(!q.length||!gas())return;const rest=[];for(const p of q){try{await fetch(gas(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p)});}catch(e){rest.push(p);}}LS.set('bio_queue',rest);alert(rest.length?'一部の記録を送れませんでした。':'未送信の記録を提出しました。');home();}
-function sendMsg(r){return r==='ok'?'スプレッドシートに提出しました。':r==='local'?'提出先が設定されていないため、この端末に保存しました。先生に知らせてください。':'通信できなかったため、この端末に保存しました。あとでトップ画面から送信できます。';}
+async function flush(){const q=LS.get('bio_queue',[]);if(!q.length||!gas())return;postForm(gas(),q);LS.set('bio_queue',[]);alert('新しいタブで、未送信の記録をまとめて提出しました。');home();return;const rest=[];for(const p of q){try{await fetch(gas(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p)});}catch(e){rest.push(p);}}LS.set('bio_queue',rest);alert(rest.length?'一部の記録を送れませんでした。':'未送信の記録を提出しました。');home();}
+function sendMsg(r){return r==='ok'?'新しいタブで提出画面が開きました。「✅ 提出できました」と表示されたら完了です（そのタブは閉じてかまいません）。ログイン画面が出たときは、学校のアカウントでログインしてから「もう一度送る」を押してください。':r==='local'?'提出先が設定されていないため、この端末に保存しました。先生に知らせてください。':'通信できなかったため、この端末に保存しました。あとでトップ画面から送信できます。';}
 function counter(el,out,min,max){const f=()=>{const n=el.value.trim().length;out.textContent=`${n}字（${min}〜${max}字）`;out.className='count'+(n<min||n>max?' ng':'');return n>=min&&n<=max;};el.addEventListener('input',f);f();return f;}
 
 /* ===== 場面イラストと演出 ===== */
@@ -904,7 +908,7 @@ function gameOver(){const S=G.S,o=G.over,last=G.allLogs[G.allLogs.length-1];coll
  const ok=counter($('gr'),$('grc'),30,50);
  $('gs').onclick=async()=>{if(!ok()){alert('30〜50字で書いてください。');return;}$('gs').disabled=true;$('gr').readOnly=true;
   const cn=counts(S.id);const r=await send({kind:'ゲームオーバー',sim:S.name,play:cn.play,overCount:cn.over,setting:choiceText().join(' ／ '),goal:G.goal,why:G.why,turn:`${G.t+1}/${S.turns}（${S.label(G.t)}）`,summary:'',axes:[],overCause:o.title,overReflect:$('gr').value.trim()});
-  if(!$('gmsg'))return;$('gmsg').textContent=sendMsg(r);$('gnext').style.display='flex';};
+  if(!$('gmsg'))return;$('gmsg').textContent=sendMsg(r);addResend('gmsg');$('gnext').style.display='flex';};
  $('again').onclick=()=>start(S.id);$('top').onclick=home;window.scrollTo(0,0);}
 
 /* 結果 */
@@ -931,7 +935,7 @@ function result(){const S=G.S,R=S.result(G.s,G.c),total=R.axes.reduce((a,x)=>a+x
  const oks=[1,2,3,4].map(i=>counter($('q'+i),$('c'+i),30,300));
  $('sub').onclick=async()=>{if(!oks.every(f=>f())){alert('それぞれ30字以上（300字以内）で書いてください。');return;}$('sub').disabled=true;[1,2,3,4].forEach(i=>$('q'+i).readOnly=true);
   const cn=counts(S.id);const r=await send({kind:'育成完了',sim:S.name,play:cn.play,overCount:cn.over,setting:choiceText().join(' ／ '),goal:G.goal,why:G.why,turn:`${S.turns}/${S.turns}`,summary:R.summary+`／元手 ${yen(S.capital)} → 最終所持金 ${yen(money(S,G.s))}`+((G.s.evLog||[]).length?`／イベント：${G.s.evLog.join('、')}`:'')+EX.summary,axes:R.axes.map(x=>`${x[0]} ★${x[1]}`),total,overCause:'',overReflect:'',q1:$('q1').value.trim(),q2:$('q2').value.trim(),q3:$('q3').value.trim(),q4:$('q4').value.trim()});
-  if(!$('smsg'))return;$('smsg').textContent=sendMsg(r);$('snext').style.display='flex';};
+  if(!$('smsg'))return;$('smsg').textContent=sendMsg(r);addResend('smsg');$('snext').style.display='flex';};
  $('again').onclick=()=>start(S.id);$('top').onclick=home;window.scrollTo(0,0);}
 
 home();
