@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>いのちを育てる1年すごろく</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#22313a;--sub:#5a6b74;--line:#e2e8ee;--accent:#23905c;--accent2:#176b43;--warn:#e08a1e;--bad:#c0392b}
+*{box-sizing:border-box}
+body{margin:0;font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Noto Sans JP",Meiryo,sans-serif;color:var(--ink);line-height:1.6;background:linear-gradient(180deg,#a9dcff 0%,#dff1ff 45%,#e5f5dc 100%) fixed;min-height:100vh}
+header{background:linear-gradient(90deg,#1f8a57,#2a9fc9);color:#fff;padding:8px 18px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+header h1{font-size:1.15rem;margin:0;letter-spacing:.05em}
+main{max-width:1400px;margin:0 auto;padding:12px}
+.card{background:#fff;border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 6px 0 rgba(30,60,80,.10),0 10px 24px rgba(30,60,80,.08);animation:pop .35s both}
+.hero{text-align:center}.hero h2{font-size:1.8rem;color:#1f7a4d;margin:4px 0}
+.hero .icons{font-size:50px;display:flex;justify-content:center;gap:22px}.hero .icons span{animation:float 3s ease-in-out infinite;display:inline-block}
+.hero .icons span:nth-child(2){animation-delay:.5s}.hero .icons span:nth-child(3){animation-delay:1s}.hero .icons span:nth-child(4){animation-delay:1.5s}
+h2{font-size:1.15rem;margin:4px 0 10px}
+button{font:inherit;border:none;border-radius:14px;padding:10px 20px;background:var(--accent);color:#fff;cursor:pointer;font-weight:800;box-shadow:0 5px 0 var(--accent2);transition:transform .1s,box-shadow .1s}
+button:active{transform:translateY(4px);box-shadow:0 1px 0 var(--accent2)}
+button.sub{background:#fff;color:var(--accent);border:2px solid var(--accent);box-shadow:0 5px 0 #bfe3cf}
+button:disabled{background:#b7c2bc;box-shadow:0 5px 0 #98a49d;cursor:not-allowed}
+button.big{font-size:1.15rem;padding:13px 30px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.nbtn{background:#fff;color:var(--ink);border:3px solid var(--line);box-shadow:0 4px 0 var(--line);min-width:64px;font-size:1.2rem}
+.nbtn.sel{border-color:var(--accent);background:#e7f7ee;box-shadow:0 4px 0 var(--accent)}
+.prow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 0;border-bottom:1px dashed var(--line)}
+.prow input{font:inherit;padding:8px;border:2px solid #cbd6dc;border-radius:10px;width:200px}
+.sb{background:#fff;color:var(--ink);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);padding:6px 12px;font-weight:700}
+.sb.sel{border-color:var(--accent);background:#e7f7ee;box-shadow:0 3px 0 var(--accent)}
+.dot{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;color:#fff;font-weight:800;flex:none}
+ul.rules li{margin-bottom:4px}
+/* ゲーム */
+.game{display:grid;grid-template-columns:1fr 340px;gap:12px;align-items:start}
+@media(max-width:960px){.game{grid-template-columns:1fr}}
+.board{display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(5,minmax(86px,auto));gap:6px;background:#fff;padding:10px;border-radius:18px;box-shadow:0 6px 0 rgba(30,60,80,.10)}
+.sq{position:relative;border-radius:12px;padding:6px 6px 4px;border:3px solid rgba(0,0,0,.06);display:flex;flex-direction:column;min-height:86px;transition:transform .2s}
+.sq .no{position:absolute;top:3px;right:7px;font-size:.72rem;color:var(--sub);font-weight:700}
+.sq .sl{position:absolute;top:-10px;left:6px;background:#22313a;color:#fff;font-size:.72rem;font-weight:800;padding:0 8px;border-radius:999px}
+.sq .st{font-weight:800;font-size:.9rem;margin-top:6px}
+.sq .ar{position:absolute;bottom:2px;right:6px;color:rgba(0,0,0,.25);font-size:.8rem}
+.sq.t-T{border-color:#f0a35a}.sq.t-C{border-color:#7fb8e6}.sq.t-Q{border-color:#b79ee0}.sq.t-G{border-color:#e8cc4f}
+.sq.t-S,.sq.t-E{border-color:var(--accent);background-image:linear-gradient(135deg,rgba(255,255,255,.6),rgba(255,255,255,0))}
+.sq.t-E .st{font-size:1rem;color:#1f7a4d}
+.sq.flash{transform:scale(1.06);box-shadow:0 0 0 4px #ffd34d}
+.tk{display:flex;flex-wrap:wrap;gap:2px;margin-top:auto}
+.tok{width:30px;height:30px;border-radius:50%;background:#fff;border:3px solid;display:inline-flex;align-items:center;justify-content:center;font-size:17px;position:relative;box-shadow:0 2px 3px rgba(0,0,0,.2)}
+.tok b{position:absolute;bottom:-5px;right:-5px;font-size:.6rem;color:#fff;border-radius:50%;width:15px;height:15px;display:flex;align-items:center;justify-content:center}
+.tok.cur{animation:bounce .7s infinite alternate;z-index:2}
+.tok.out{filter:grayscale(1);opacity:.45}
+.side .turn{background:#fff;border-radius:18px;padding:14px;border:4px solid;box-shadow:0 6px 0 rgba(30,60,80,.10);margin-bottom:12px;text-align:center}
+.tname{font-size:1.3rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px}
+.tsub{color:var(--sub);font-size:.9rem;margin-bottom:6px}
+.dice{width:92px;height:92px;margin:6px auto 12px;border-radius:20px;background:#fff;border:4px solid #22313a;font-size:3.2rem;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 0 #22313a}
+.dice.roll{animation:spin .12s linear infinite}
+.hand{margin-top:12px;text-align:left}
+.cardc{display:flex;gap:8px;align-items:center;background:#eef6fd;border:2px solid #9cc8ef;border-radius:10px;padding:5px 10px;margin-top:6px;font-weight:700;font-size:.92rem}
+.cardc span{font-size:1.3rem}
+.plist{background:#fff;border-radius:18px;padding:8px 10px;box-shadow:0 6px 0 rgba(30,60,80,.10)}
+.pr{display:grid;grid-template-columns:28px 24px 1fr 70px 24px 38px 20px;gap:5px;align-items:center;padding:5px 2px;border-bottom:1px dashed var(--line);font-size:.88rem}
+.pr:last-child{border-bottom:none}
+.pr.now{background:#fffbea;border-radius:8px}.pr.out{opacity:.5}
+.pr .pn{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:700}
+.hpbar{height:10px;background:#e6edf0;border-radius:999px;overflow:hidden}.hpbar i{display:block;height:100%;transition:width .6s}
+.small{font-size:.85rem;color:var(--sub)}
+/* モーダル */
+.ov{position:fixed;inset:0;background:rgba(20,30,40,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.ov.hidden{display:none}
+.mbox{background:#fff;border-radius:22px;padding:22px 24px;max-width:620px;width:100%;text-align:center;border:5px solid #9cc8ef;box-shadow:0 12px 40px rgba(0,0,0,.3);animation:pop .3s both}
+.mbox.warn{border-color:#f0a35a}.mbox.good{border-color:#4cc38a}.mbox.quiz{border-color:#b79ee0}
+.mbox.dark{background:radial-gradient(circle at 50% 0,#3d4340,#141716);color:#eee;border-color:#555}
+.micon{font-size:64px;line-height:1.2;animation:starpop .5s both}
+.mbox h2{font-size:1.4rem;margin:6px 0 10px}
+.mbody{font-size:1.05rem}
+.memo{font-size:.92rem;color:var(--sub);background:#f4f7f9;border-radius:10px;padding:8px 12px;text-align:left;margin:10px 0 0}
+.mbox.dark .memo{background:rgba(255,255,255,.08);color:#ccd}
+.mbtns{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.mbtns button{width:100%}
+.mbtns.choices button{background:#fff;color:var(--ink);border:3px solid #b79ee0;box-shadow:0 4px 0 #d9ccf0;text-align:left}
+.ok{color:#1a8a4d;font-weight:800}.ng{color:var(--bad);font-weight:800}
+.toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);background:#1d2a4a;color:#fff;border-radius:14px;padding:10px 22px;font-weight:800;z-index:60;animation:pop .3s both}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}th{background:#eef5f1}
+tr.outr td{color:var(--sub)}
+.qcard{border:4px solid #f0c64a;background:linear-gradient(180deg,#fffbea,#fff)}
+.qcard li{margin-bottom:6px;font-size:1.05rem}
+.hit{animation:hit .5s}
+.confetti{position:fixed;top:-20px;width:10px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards;border-radius:2px}
+footer{text-align:center;color:var(--sub);font-size:.8rem;padding:12px}
+@keyframes pop{from{opacity:0;transform:scale(.95) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+@keyframes spin{0%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}100%{transform:rotate(-12deg)}}
+@keyframes starpop{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes hit{0%,100%{transform:none}20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-3px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,0)}}
+@keyframes fall{to{transform:translateY(112vh) rotate(760deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><h1>🎲 いのちを育てる1年 すごろく</h1><div class="small" style="color:#e8f6ff">生物育成の技術</div></header>
+<main id="app"></main>
+<div id="modal" class="ov hidden"><div id="mwrap"></div></div>
+<footer>いのちを育てる1年すごろく ／ © Irie Kanji</footer>
+<script>
+/* ===== データ ===== */
+const COLORS=['#e74c3c','#2e86de','#27ae60','#f39c12','#8e44ad','#16a085','#d35400'];
+const SEASONS=['','春','梅雨','夏','秋','冬'];
+const SCOL=['','#ffeef3','#eaf2fb','#fff6d9','#ffeedf','#eef2f6'];
+const BT=['S','n','C','T','Q','G', 'T','n','C','T','Q','T', 'G','T','C','n','T','Q', 'T','C','G','T','n','Q', 'T','C','T','Q','G','E'];
+const N=BT.length;
+const SEA=i=>i<=5?1:i<=11?2:i<=17?3:i<=23?4:5;
+const TYPE={S:'🌱 スタート',E:'🏁 ゴール<br>収穫！',T:'⚡ トラブル',C:'🃏 くふう',Q:'❓ クイズ',G:'🌞 ラッキー',n:'🌿'};
+const SUBJ={
+ tomato:{name:'ミニトマト',icon:'🍅',
+  cards:{shichu:{n:'支柱・誘引',i:'🪵',m:'茎を支柱にしばると、風で倒れたり折れたりするのを防げる。'},
+   mimawari:{n:'見回り・防除',i:'🔍',m:'毎日観察して、病気や害虫を早く見つけて対処する。'},
+   tenteki:{n:'天敵（テントウムシ）',i:'🐞',m:'アブラムシを食べる天敵を利用すると、農薬を減らせる。'},
+   kansui:{n:'水やりの調整',i:'💧',m:'天気や土の乾き具合に合わせて、水の量を調整する。'},
+   une:{n:'高うね・排水',i:'⛰️',m:'うねを高くして水はけをよくすると、根ぐされを防げる。'},
+   wakime:{n:'わき芽かき',i:'✂️',m:'わき芽をかくと、養分が実に集まり、風通しもよくなる。'},
+   tsuihi:{n:'追肥',i:'🧪',m:'育ち具合を見て、足りない養分を肥料で補う。'},
+   hoon:{n:'保温（ビニール・ハウス）',i:'🏠',m:'ビニールで覆ったりハウスで育てたりして、寒さから守る。'},
+   shako:{n:'遮光ネット',i:'🕶️',m:'強すぎる日差しをさえぎり、高温による害をやわらげる。'}},
+  tr:[{n:'遅霜（おそじも）で苗が傷む',s:[1],d:2,c:['hoon'],m:'春先は霜が降りることがある。苗が小さいうちは保温して守る。'},
+   {n:'強風で苗が倒れそう',s:[1,4],d:2,c:['shichu'],m:'トマトは茎がのびると自分の重さを支えられない。早めに支柱を立てる。'},
+   {n:'アブラムシが大発生',s:[1,2,3,4],d:2,c:['mimawari','tenteki'],m:'アブラムシは汁を吸い、ウイルス病も広げる。早く見つけて防除する。'},
+   {n:'長雨で根ぐされ',s:[2],d:3,c:['une'],m:'根も呼吸している。水はけが悪いと、根が酸素不足になる。'},
+   {n:'疫病（カビの病気）',s:[2,4],d:3,c:['mimawari'],m:'湿度が高いと、カビの仲間による病気が広がりやすい。'},
+   {n:'わき芽がのびすぎた',s:[2,3],d:2,c:['wakime'],m:'わき芽をそのままにすると養分が分散し、実が育ちにくい。'},
+   {n:'日照りで水不足',s:[3],d:3,c:['kansui'],m:'水が足りないと光合成ができず、株がしおれる。'},
+   {n:'台風が直撃',s:[3,4],d:4,c:['shichu'],m:'支柱と誘引は、強い風から株を守る。'},
+   {n:'暑さで花が落ちる',s:[3],d:2,c:['shako'],m:'トマトは30℃をこえると花粉の働きが悪くなり、実がつきにくい。'},
+   {n:'実が割れた（裂果）',s:[3,4],d:2,c:['kansui'],m:'土の水分が急に増えると、実の皮が追いつかずに割れる。'},
+   {n:'肥料切れで葉が黄色に',s:[3,4,5],d:2,c:['tsuihi'],m:'窒素が不足すると、葉の色がうすくなる。'},
+   {n:'冬の寒さで育たない',s:[5],d:3,c:['hoon'],m:'トマトは寒さに弱い。冬はハウスで温度を保って育てる。'}],
+  quiz:[{q:'肥料の3要素のうち、おもに葉や茎を育てるのは？',a:['窒素','リン酸','カリ'],k:0,m:'窒素は葉や茎、リン酸は花や実、カリは根の育ちに関わる。'},
+   {q:'団粒構造の土のよいところは？',a:['水はけだけがよい','水はけと水もちの両方がよい','水もちだけがよい'],k:1,m:'土の粒が集まった団粒構造は、すき間が多く、水はけ・水もち・通気性がよい。'},
+   {q:'トマトがよく育つ昼の気温は？',a:['10〜15℃','20〜25℃','35〜40℃'],k:1,m:'トマトは20〜25℃くらいでよく育つ。30℃をこえると実がつきにくい。'},
+   {q:'わき芽かきをする理由は？',a:['実に養分を集めるため','葉をふやすため','根をのばすため'],k:0,m:'わき芽をかくと養分が実に集まり、風通しもよくなる。'},
+   {q:'病気に強い品種を根の部分に使って苗を作る技術は？',a:['さし木','接ぎ木','株分け'],k:1,m:'接ぎ木苗は、病気に強い根と、おいしい実をつける品種を組み合わせたもの。'}],
+  harvest:h=>`1株から約${h*25}個のミニトマトを収穫`},
+ madai:{name:'マダイ',icon:'🐟',
+  cards:{shizumeru:{n:'いけすを沈める',i:'⬇️',m:'いけすを深く沈めると、海面近くの赤潮や大波の影響を減らせる。'},
+   esadome:{n:'えさ止め',i:'🚫',m:'赤潮のときにえさを与えると、魚が酸素を多く使い、被害が大きくなる。'},
+   ami:{n:'網の掃除・交換',i:'🧽',m:'網の汚れを落とすと、海水が入れかわりやすくなる。'},
+   air:{n:'酸素の供給',i:'🫧',m:'水温が高いと水にとける酸素が少なくなる。空気を送りこんで補う。'},
+   vaccine:{n:'ワクチン',i:'💉',m:'ワクチンを注射して、流行しやすい病気を予防する。'},
+   mimawari:{n:'見回り・死んだ魚の回収',i:'🔍',m:'毎日観察し、死んだ魚をすぐ回収すると、病気の広がりを防げる。'},
+   esachosei:{n:'えさの量の調整',i:'⚖️',m:'水温や食べ具合に合わせてえさの量を変えると、食べ残しが減る。'}},
+  tr:[{n:'赤潮が発生',s:[3,4],d:4,c:['esadome','shizumeru'],m:'赤潮のプランクトンは魚のえらに害を与える。えさを止め、いけすを沈めて避難する。'},
+   {n:'台風が接近',s:[3,4],d:4,c:['shizumeru'],m:'いけすを沈めると、大波でいけすが壊れるのを防げる。'},
+   {n:'夏の酸素不足',s:[3],d:3,c:['air'],m:'水温が高いと、水にとける酸素が少なくなる。'},
+   {n:'ウイルス病が流行',s:[3,4],d:3,c:['vaccine','mimawari'],m:'病気はワクチンで予防し、弱った魚を早く取り除く。'},
+   {n:'網に貝や海藻がびっしり',s:[2,3,4],d:2,c:['ami'],m:'網が汚れると新しい海水が入りにくくなり、酸素不足や病気の原因になる。'},
+   {n:'食べ残しで水が汚れた',s:[1,2,3],d:2,c:['esachosei'],m:'えさのやりすぎは水を汚し、お金もむだになる。'},
+   {n:'寄生虫が見つかった',s:[1,2,4,5],d:2,c:['mimawari'],m:'毎日の観察で、異常を早く見つけることが大切。'},
+   {n:'冬の低水温で食べ残し',s:[5],d:2,c:['esachosei'],m:'マダイは水温が下がるとえさをあまり食べない。量を減らす。'}],
+  quiz:[{q:'マダイがよくえさを食べる水温は？',a:['10℃くらい','20〜26℃くらい','35℃くらい'],k:1,m:'マダイは水温が下がると、えさをあまり食べなくなる。'},
+   {q:'赤潮のとき、まずするべきことは？',a:['えさを多めにあげる','えさを止める','網を交換する'],k:1,m:'えさを食べた魚は酸素を多く使うため、被害が大きくなる。'},
+   {q:'陸上養殖の短所は？',a:['赤潮の影響を受けやすい','電気代などの費用が大きい','台風に弱い'],k:1,m:'水温や水質を管理できる一方で、ポンプなどの電気代がかかる。'},
+   {q:'食べられる部分が約1.2倍になったマダイに使われた技術は？',a:['ゲノム編集','遺伝子組換え','接ぎ木'],k:0,m:'筋肉の成長をおさえる遺伝子を働かなくしたマダイが、国に届け出て販売されている。'},
+   {q:'育てた親から卵をとり、また育てる養殖を何という？',a:['完全養殖','天然養殖','半分養殖'],k:0,m:'完全養殖は天然の稚魚をとらないので、海の資源を守ることにつながる。'}],
+  harvest:h=>`平均約${(0.4+h*0.08).toFixed(1)}kgのマダイを出荷`},
+ hen:{name:'ニワトリ',icon:'🐔',
+  cards:{kanki:{n:'換気・細霧',i:'🌬️',m:'風を送り、細かい霧で温度を下げる。空気もきれいになる。'},
+   hoon:{n:'保温',i:'🔥',m:'すきま風を防ぎ、暖房で鶏舎の温度を保つ。'},
+   shodoku:{n:'清掃・消毒',i:'🧴',m:'ふんを片付けて消毒し、病原体を減らす。'},
+   net:{n:'野鳥・ネズミ対策',i:'🥅',m:'ネットや穴ふさぎで、病気を運ぶ野鳥やネズミの侵入を防ぐ。'},
+   vaccine:{n:'ワクチン',i:'💉',m:'獣医師の指導で、伝染病を予防する。'},
+   light:{n:'照明の調整',i:'💡',m:'鶏は日の長さを感じて卵を産む。照明で明るい時間を保つ。'},
+   calcium:{n:'カルシウム飼料',i:'🥚',m:'卵の殻の材料になるカルシウムを、飼料で補う。'}},
+  tr:[{n:'猛暑で熱中症',s:[3],d:4,c:['kanki'],m:'鶏は汗をかけないので、暑さに弱い。'},
+   {n:'寒波がきた',s:[5],d:3,c:['hoon'],m:'寒いと体温を保つのにえさのエネルギーが使われ、卵が減る。'},
+   {n:'鳥インフルエンザの警戒',s:[1,4,5],d:4,c:['net','shodoku'],m:'ウイルスは野鳥やネズミ、人の靴などから入る。侵入を防ぐことが最大の予防。'},
+   {n:'アンモニアで空気が悪い',s:[1,2,3,4,5],d:2,c:['kanki','shodoku'],m:'ふんから出るアンモニアは、鶏の目や呼吸器を傷める。'},
+   {n:'近くで伝染病が発生',s:[1,2,3,4,5],d:3,c:['vaccine'],m:'多くの伝染病はワクチンで予防できる。'},
+   {n:'日が短くなり産卵が減った',s:[4,5],d:2,c:['light'],m:'産卵には、1日14〜16時間ほどの明るさが目安。'},
+   {n:'卵の殻がうすくなった',s:[3,4],d:2,c:['calcium'],m:'暑さや年齢、カルシウム不足で殻がうすくなる。'},
+   {n:'ネズミが侵入',s:[1,2,4],d:2,c:['net'],m:'ネズミは病気を運び、えさも食べてしまう。'},
+   {n:'梅雨の湿気でカビ',s:[2],d:2,c:['kanki'],m:'湿気がこもると、カビや病気が増える。'}],
+  quiz:[{q:'鶏に卵を多く産ませるために調整するのは？',a:['明るい時間の長さ','鶏舎の色','音楽'],k:0,m:'鶏は日の長さを感じて卵を産む。'},
+   {q:'卵の殻を丈夫にする栄養素は？',a:['カルシウム','ビタミンC','鉄'],k:0,m:'殻のおもな成分は炭酸カルシウム。'},
+   {q:'アニマルウェルフェアの「5つの自由」に入るのは？',a:['通常の行動をする自由','食べ放題の自由','外に旅行する自由'],k:0,m:'飢えや渇き、恐怖、不快、痛みや病気からの自由と、通常の行動をする自由の5つ。'},
+   {q:'鶏が暑さに弱い理由は？',a:['汗をかけないから','羽が少ないから','水を飲まないから'],k:0,m:'鶏は汗をかけないので、口を開けて呼吸して体温を下げる。'},
+   {q:'鶏が鶏舎の中を自由に歩ける飼い方は？',a:['ケージ飼い','平飼い','つなぎ飼い'],k:1,m:'平飼いは鶏のストレスが少ないが、広い面積と手間がかかる。'}],
+  harvest:h=>`1羽あたり年間約${150+h*17}個の卵を出荷`}
+};
+const LUCKY=[{t:'天気に恵まれた！',h:2,i:'🌞',m:'光と温度がちょうどよく、よく育っています。'},
+ {t:'順調に育っている',h:1,i:'🌱',m:'毎日の世話の成果が出ています。'},
+ {t:'先輩の生産者からアドバイス',card:true,i:'👨‍🌾',m:'くふうカードを1枚もらえます。'}];
+const MAXHP=10,HAND=3;
+
+/* ===== 共通 ===== */
+const $=id=>document.getElementById(id),app=$('app');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const rand=n=>Math.floor(Math.random()*n);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const draw=S=>{const k=Object.keys(S.cards);return k[rand(k.length)];};
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1100);}
+function confetti(n=60){const cs=['#ffd34d','#ff7a59','#4cc38a','#4aa3df','#b06ad9','#ff9fc4'];for(let i=0;i<n;i++){const d=document.createElement('div');d.className='confetti';d.style.left=Math.random()*100+'vw';d.style.background=cs[i%cs.length];d.style.animationDuration=(2+Math.random()*2)+'s';d.style.animationDelay=Math.random()*.6+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),5000);}}
+function modal({icon,title,body,cls,buttons,choices}){return new Promise(res=>{const ov=$('modal');
+ $('mwrap').innerHTML=`<div class="mbox ${cls||''}">${icon?`<div class="micon">${icon}</div>`:''}<h2>${title}</h2><div class="mbody">${body||''}</div><div class="mbtns ${choices?'choices':''}">${buttons.map((b,i)=>`<button data-b="${i}" class="${b.cls||''}">${b.label}</button>`).join('')}</div></div>`;
+ ov.classList.remove('hidden');
+ $('mwrap').querySelectorAll('[data-b]').forEach(el=>el.onclick=()=>{ov.classList.add('hidden');res(buttons[+el.dataset.b].v);});});}
+
+/* ===== 準備画面 ===== */
+let setup={n:4,pl:[]};
+for(let i=0;i<7;i++)setup.pl[i]={name:'',subj:['tomato','madai','hen'][i%3]};
+function renderSetup(){
+ app.innerHTML=`<div class="card hero"><div class="icons"><span>🎲</span><span>🍅</span><span>🐟</span><span>🐔</span></div><h2>いのちを育てる1年 すごろく</h2>
+ <p>春から冬までの1年間、生き物を育てながらゴール（収穫）を目指そう！<br>トラブルを防ぐ「くふうカード」を、どこで使うかがポイントです。</p></div>
+ <div class="card"><h2>① 人数を選ぶ</h2><div class="row">${[2,3,4,5,6,7].map(n=>`<button class="nbtn ${n===setup.n?'sel':''}" data-n="${n}">${n}人</button>`).join('')}</div></div>
+ <div class="card"><h2>② 名前と、育てる生き物を選ぶ</h2>${setup.pl.slice(0,setup.n).map((p,i)=>`<div class="prow"><span class="dot" style="background:${COLORS[i]}">${i+1}</span>
+  <input data-i="${i}" value="${esc(p.name)}" placeholder="プレイヤー${i+1}" maxlength="10">
+  ${Object.entries(SUBJ).map(([k,S])=>`<button class="sb ${p.subj===k?'sel':''}" data-i="${i}" data-k="${k}">${S.icon} ${S.name}</button>`).join('')}</div>`).join('')}
+  <div style="margin-top:14px"><button id="start" class="big">🎲 ゲームスタート！</button></div></div>
+ <div class="card"><h2>📖 ルール</h2><ul class="rules">
+  <li>順番にサイコロをふって進みます。マスは春から冬までの1年間です。</li>
+  <li><b>⚡ トラブル</b>：元気が減ります。合う「くふうカード」を持っていれば防げます。</li>
+  <li><b>🃏 くふう</b>：くふうカードを1枚もらえます。カードは<b>${HAND}枚まで</b>。使うとなくなります。</li>
+  <li><b>❓ クイズ</b>：班で相談してOK。正解すると元気が1回復します。</li>
+  <li><b>🌞 ラッキー</b>：よいことが起こります。</li>
+  <li>元気（最大${MAXHP}）が0になると、そこで育成は終わりです。ゴールで残った元気が多いほど、たくさん収穫できます。</li>
+  <li>カードをいつ使うか、取っておくか。班のみんなで相談しよう！</li></ul></div>`;
+ app.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{setup.n=+b.dataset.n;renderSetup();});
+ app.querySelectorAll('input[data-i]').forEach(el=>el.oninput=()=>{setup.pl[+el.dataset.i].name=el.value.trim();});
+ app.querySelectorAll('.sb').forEach(b=>b.onclick=()=>{setup.pl[+b.dataset.i].subj=b.dataset.k;renderSetup();});
+ $('start').onclick=startGame;window.scrollTo(0,0);}
+
+/* ===== ゲーム ===== */
+let P=[],cur=0,busy=false,order=[];
+function startGame(){
+ P=setup.pl.slice(0,setup.n).map((p,i)=>{const S=SUBJ[p.subj];return{name:p.name||`プレイヤー${i+1}`,subj:p.subj,color:COLORS[i],pos:0,hp:MAXHP,hand:[draw(S),draw(S)],done:false,out:false,log:[],qs:[]};});
+ cur=0;busy=false;order=[];renderGame();}
+function gridPos(i){const r=Math.floor(i/6);let c=i%6;if(r%2)c=5-c;return[r,c];}
+function renderGame(){
+ app.innerHTML=`<div class="game"><div class="board" id="board">${BT.map((t,i)=>{const[r,c]=gridPos(i),se=SEA(i),first=i===0||SEA(i-1)!==se;
+  const arrow=i===N-1?'':(Math.floor(i/6)!==Math.floor((i+1)/6)?'⬇':(Math.floor(i/6)%2?'◀':'▶'));
+  return`<div class="sq t-${t}" id="sq${i}" style="grid-row:${r+1};grid-column:${c+1};background-color:${SCOL[se]}">${first?`<span class="sl">${SEASONS[se]}</span>`:''}<span class="no">${i}</span><div class="st">${TYPE[t]}</div><div class="tk" id="tk${i}"></div><span class="ar">${arrow}</span></div>`;}).join('')}</div><div class="side" id="side"></div></div>`;
+ renderTokens();renderSide();window.scrollTo(0,0);}
+function renderTokens(){for(let i=0;i<N;i++){const e=$('tk'+i);if(e)e.innerHTML='';}
+ P.forEach((p,i)=>{const e=$('tk'+p.pos);if(e)e.insertAdjacentHTML('beforeend',`<span class="tok ${i===cur&&!busy?'cur':''} ${i===cur&&busy?'cur':''} ${p.out?'out':''}" style="border-color:${p.color}">${SUBJ[p.subj].icon}<b style="background:${p.color}">${i+1}</b></span>`);});}
+const hpCol=h=>h>=7?'#27ae60':h>=4?'#e08a1e':'#c0392b';
+function cardHtml(S,c){const k=S.cards[c];return`<div class="cardc" title="${esc(k.m)}"><span>${k.i}</span>${k.n}</div>`;}
+function renderSide(){const p=P[cur],S=SUBJ[p.subj];
+ $('side').innerHTML=`<div class="turn" style="border-color:${p.color}"><div class="tname"><span class="dot" style="background:${p.color}">${cur+1}</span>${esc(p.name)}さんの番</div>
+ <div class="tsub">${S.icon} ${S.name} ・ いまは${SEASONS[SEA(p.pos)]} ・ 元気 ${p.hp}/${MAXHP}</div>
+ <div class="dice" id="dice">🎲</div><button id="roll" class="big" ${busy?'disabled':''}>サイコロをふる</button>
+ <div class="hand"><b>🃏 くふうカード（${p.hand.length}/${HAND}）</b>${p.hand.map(c=>cardHtml(S,c)).join('')||'<div class="small">まだありません</div>'}</div></div>
+ <div class="plist">${P.map((q,i)=>`<div class="pr ${i===cur?'now':''} ${q.out?'out':''}"><span class="dot" style="background:${q.color}">${i+1}</span><span>${SUBJ[q.subj].icon}</span><span class="pn">${esc(q.name)}</span><span class="hpbar"><i style="width:${q.hp*100/MAXHP}%;background:${hpCol(q.hp)}"></i></span><span><b>${q.hp}</b></span><span>🃏${q.hand.length}</span><span>${q.done?'🏁':q.out?'💤':''}</span></div>`).join('')}</div>`;
+ $('roll').onclick=roll;}
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&$('roll')&&!$('roll').disabled&&$('modal').classList.contains('hidden')){e.preventDefault();roll();}});
+async function roll(){if(busy)return;busy=true;const p=P[cur];$('roll').disabled=true;
+ const d=$('dice');d.classList.add('roll');for(let k=0;k<10;k++){d.textContent=1+rand(6);await sleep(70);}
+ const n=1+rand(6);d.classList.remove('roll');d.textContent=n;await sleep(450);
+ for(let k=0;k<n&&p.pos<N-1;k++){p.pos++;renderTokens();await sleep(230);}
+ const sq=$('sq'+p.pos);sq.classList.add('flash');await sleep(350);sq.classList.remove('flash');
+ await land(p);busy=false;nextTurn();}
+function nextTurn(){if(P.every(q=>q.done||q.out)){finish();return;}
+ do{cur=(cur+1)%P.length;}while(P[cur].done||P[cur].out);renderTokens();renderSide();}
+
+async function land(p){const t=BT[p.pos],S=SUBJ[p.subj];
+ if(t==='E'){p.done=true;order.push(p);renderSide();confetti(50);
+  await modal({icon:'🎉',cls:'good',title:`${esc(p.name)}さん、収穫！`,body:`${S.icon} ${S.harvest(p.hp)}<br>のこった元気：<b>${p.hp}</b>`,buttons:[{label:'次の人へ ▶',v:1}]});return;}
+ if(t==='T')return trouble(p,S);
+ if(t==='C')return getCard(p,S,'🃏','くふうマス','くふうカードを1枚手に入れました。');
+ if(t==='Q')return quiz(p,S);
+ if(t==='G')return lucky(p,S);
+ toast('🌿 順調に育っています');await sleep(800);}
+
+async function trouble(p,S){const se=SEA(p.pos);let pool=S.tr.filter(x=>x.s.includes(se));const fresh=pool.filter(x=>!p.log.some(l=>l.n===x.n));if(fresh.length)pool=fresh;
+ const tr=pool[rand(pool.length)],have=[...new Set(p.hand.filter(c=>tr.c.includes(c)))],need=tr.c.map(c=>`${S.cards[c].i} ${S.cards[c].n}`).join('、');
+ $('board').classList.remove('hit');void $('board').offsetWidth;$('board').classList.add('hit');
+ if(have.length){
+  const v=await modal({icon:'⚡',cls:'warn',title:`${S.icon} ${tr.n}`,body:`このままだと <b class="ng">元気 −${tr.d}</b><br>持っているカードで防げます！ 使いますか？<p class="small">カードは使うとなくなります。この先のトラブルのために、取っておくこともできます。班で相談しよう。</p>`,
+   buttons:[...have.map(c=>({label:`${S.cards[c].i} ${S.cards[c].n}を使う`,v:c})),{label:`使わない（元気 −${tr.d}）`,v:'',cls:'sub'}]});
+  if(v){p.hand.splice(p.hand.indexOf(v),1);p.log.push({n:tr.n,ok:true,card:S.cards[v].n});renderSide();
+   await modal({icon:'🛡️',cls:'good',title:'防げました！',body:`${S.cards[v].i} <b>${S.cards[v].n}</b>で、「${tr.n}」を防ぎました。<p class="memo">技術メモ：${tr.m}</p>`,buttons:[{label:'次の人へ ▶',v:1}]});return;}}
+ p.hp=Math.max(0,p.hp-tr.d);p.log.push({n:tr.n,ok:false,need});renderSide();
+ if(p.hp<=0){p.out=true;renderTokens();renderSide();
+  await modal({cls:'dark',title:`${esc(p.name)}さんの${S.name}は、育成をつづけられなくなりました`,body:`原因：${tr.n}<p class="memo">技術メモ：${tr.m}<br>防ぐには：${need}</p><p style="font-size:.92rem">命を預かる仕事では、ひとつひとつの判断が結果につながります。何があれば防げたか、考えてみよう。</p>`,buttons:[{label:'次の人へ ▶',v:1}]});return;}
+ await modal({icon:'⚡',cls:'warn',title:`${S.icon} ${tr.n}`,body:`<b class="ng">元気 −${tr.d}</b>（のこり ${p.hp}）<p class="memo">技術メモ：${tr.m}<br>防ぐには：${need}</p>`,buttons:[{label:'次の人へ ▶',v:1}]});}
+
+async function getCard(p,S,icon,title,msg){const c=draw(S),k=S.cards[c];
+ if(p.hand.length<HAND){p.hand.push(c);renderSide();
+  await modal({icon,cls:'',title,body:`${msg}<div class="cardc" style="justify-content:center;font-size:1.1rem;margin:12px auto;max-width:360px"><span>${k.i}</span>${k.n}</div><p class="memo">${k.m}</p>`,buttons:[{label:'次の人へ ▶',v:1}]});return;}
+ const all=[...p.hand,c];
+ const v=await modal({icon,cls:'',title,body:`${msg}<div class="cardc" style="justify-content:center;font-size:1.1rem;margin:12px auto;max-width:360px"><span>${k.i}</span>${k.n}（新しいカード）</div>カードは${HAND}枚までです。<b>1枚すてるカード</b>を選ぼう。`,
+  buttons:all.map((x,i)=>({label:`${S.cards[x].i} ${S.cards[x].n}をすてる${i===all.length-1?'（新しいカード）':''}`,v:i,cls:'sub'}))});
+ all.splice(v,1);p.hand=all;renderSide();}
+
+async function quiz(p,S){let pool=S.quiz.map((q,i)=>i).filter(i=>!p.qs.includes(i));if(!pool.length){p.qs=[];pool=S.quiz.map((q,i)=>i);}
+ const qi=pool[rand(pool.length)],q=S.quiz[qi];p.qs.push(qi);
+ const idx=q.a.map((a,i)=>i).sort(()=>Math.random()-.5);
+ const v=await modal({icon:'❓',cls:'quiz',choices:true,title:q.q,body:'<span class="small">班で相談してOK！</span>',buttons:idx.map(i=>({label:q.a[i],v:i}))});
+ const ok=v===q.k;if(ok){p.hp=Math.min(MAXHP,p.hp+1);renderSide();}
+ await modal({icon:ok?'⭕':'❌',cls:ok?'good':'quiz',title:ok?'正解！ 元気 +1':'ざんねん…',body:`答え：<b>${q.a[q.k]}</b><p class="memo">${q.m}</p>`,buttons:[{label:'次の人へ ▶',v:1}]});}
+
+async function lucky(p,S){const e=LUCKY[rand(LUCKY.length)];
+ if(e.card)return getCard(p,S,e.i,e.t,e.m);
+ p.hp=Math.min(MAXHP,p.hp+e.h);renderSide();
+ await modal({icon:e.i,cls:'good',title:`${e.t} 元気 +${e.h}`,body:e.m,buttons:[{label:'次の人へ ▶',v:1}]});}
+
+/* ===== 結果 ===== */
+function finish(){const fin=[...order].sort((a,b)=>b.hp-a.hp||order.indexOf(a)-order.indexOf(b)),outs=P.filter(p=>p.out);
+ app.innerHTML=`<div class="card hero"><div class="icons"><span>🎉</span><span>🍅</span><span>🐟</span><span>🐔</span></div><h2>1年間の育成が終わりました</h2></div>
+ <div class="card"><h2>🏆 結果</h2><table><tr><th>順位</th><th>名前</th><th>育てた生き物</th><th>のこった元気</th><th>収穫</th></tr>
+ ${fin.map((p,i)=>`<tr><td><b>${i+1}位</b></td><td><span class="dot" style="background:${p.color};width:20px;height:20px"></span> ${esc(p.name)}</td><td>${SUBJ[p.subj].icon} ${SUBJ[p.subj].name}</td><td>${p.hp}</td><td>${SUBJ[p.subj].harvest(p.hp)}</td></tr>`).join('')}
+ ${outs.map(p=>`<tr class="outr"><td>—</td><td>${esc(p.name)}</td><td>${SUBJ[p.subj].icon} ${SUBJ[p.subj].name}</td><td>0</td><td>育成をつづけられなかった</td></tr>`).join('')}</table></div>
+ <div class="card"><h2>⚡ 出会ったトラブルと「くふう」</h2><table><tr><th>名前</th><th>防げたトラブル（使ったカード）</th><th>防げなかったトラブル（防ぐには）</th></tr>
+ ${P.map(p=>`<tr><td>${SUBJ[p.subj].icon} ${esc(p.name)}</td><td>${p.log.filter(l=>l.ok).map(l=>`${l.n}（${l.card}）`).join('<br>')||'—'}</td><td>${p.log.filter(l=>!l.ok).map(l=>`${l.n}（${l.need}）`).join('<br>')||'—'}</td></tr>`).join('')}</table></div>
+ <div class="card qcard"><h2>✏️ ふりかえろう</h2><ol><li>いちばん困ったトラブルは何だった？</li><li>役に立った「くふう」は何？ なぜ防げたのだろう？</li><li>生き物を育てる人は、何を知っていて、何を工夫しているのだろう？ 気になったことを「問い」にして付箋に書こう。</li></ol></div>
+ <div class="row" style="justify-content:center;margin-bottom:20px"><button id="again" class="big">🎲 同じメンバーでもう一度</button><button class="sub" id="reset">メンバーを変える</button></div>`;
+ confetti(80);$('again').onclick=startGame;$('reset').onclick=renderSetup;window.scrollTo(0,0);}
+
+renderSetup();
+</script>
+</body>
+</html>
