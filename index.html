@@ -182,12 +182,6 @@ td.yen{text-align:right;white-space:nowrap}tr.sum td{font-weight:800;border-top:
 .pchips{position:absolute;left:8px;top:8px;right:8px;display:flex;flex-wrap:wrap;gap:4px}
 .pchips span{background:rgba(255,255,255,.9);border-radius:999px;padding:1px 10px;font-size:.78rem;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,.15)}
 .oimg{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:8px;display:block}
-.gtoggle{display:block;background:#eef6fd;border:2px dashed #9cc8ef;border-radius:12px;padding:8px 14px;margin:0 0 12px;cursor:pointer}
-.gtoggle.on{background:#dff0ff;border-style:solid;border-color:#2a9fc9}
-.gchip{background:#dff0ff!important;color:#1d5f86}
-.guidecard{text-align:center;border:4px solid #9cc8ef}.guidecard .log{text-align:left}
-.evhead.gh{background:#2a9fc9}
-.qcard{border:4px solid #f0c64a;background:linear-gradient(180deg,#fffbea,#fff)}
 @media (prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -651,24 +645,6 @@ function sceneHen(s,t,c){const tt=Math.min(t,14),m=HEN.mon(tt),T=AIR[m],e=s.E[tt
  if(T<=10)g+=`<g class="snow" fill="#fff">${Array.from({length:22},(_,i)=>`<circle cx="${(i*47)%300}" cy="${(i*29)%60}" r="${1.5+i%2}" style="animation-delay:-${(i%8)*.5}s"/>`).join('')}</g>`;
  return g+'</svg>';}
 
-/* ===== ガイダンスモード ===== */
-let GUIDE=new URLSearchParams(location.search).get('mode')==='guide';
-const GUIDE_TURNS=5;
-function guideEnd(over){const S=G.S,seen=new Set(),L=[];
- G.allLogs.forEach(x=>x.L.forEach(m=>{if((m.type==='bad'||m.type==='warn')&&!seen.has(m.msg)){seen.add(m.msg);L.push(m);}}));
- if(over)collect(S,over.title,over.explain);
- const n=over?G.t+1:G.t,stems=['なぜ〜したら、〜になったの？','どうすれば〜を防げる？','〜と〜では、何がちがう？','〜には、いくらかかる？','生き物にとって、〜はどうなの？','プロの生産者は、〜をどうしている？'];
- app.innerHTML=`${over?`<div class="go"><h2>育成はここで終わりです</h2><div class="cause">${esc(over.title)}</div>${over.explain?`<p class="memo">技術メモ：${esc(over.explain)}</p>`:''}</div>`:''}
- <div class="card guidecard"><div class="evhead gh">🧭 ガイダンス体験</div><h2>${over?'体験はここまで':'🧭 体験おわり！'}</h2>
- <p>${S.icon} ${S.name}を ${n} ターン体験しました。うまくいったこと、うまくいかなかったことはありましたか？</p>
- <div class="scene" style="max-width:420px;margin:0 auto 12px">${S.scene(G.s,Math.max(0,Math.min(n,S.turns)-1),G.c)}</div>
- <h3>⚠ 気になったできごと</h3>${L.length?logHtml(L.slice(0,6)):'<div class="log">大きなトラブルはありませんでした。でも、本番は14ターン以上続きます。この先には何が起こるだろう？</div>'}</div>
- <div class="card qcard"><h2>✏️ 「問い」を付箋に書こう</h2><p><b>生き物を育てる人は、何を知っていて、何を工夫しているのだろう？</b><br>体験して「わからなかったこと」「もっと知りたいこと」を、1枚に1つずつ書こう。</p>
- <div>${stems.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
- <p class="small">書けたら、班で付箋を「環境（光・水・温度）」「土・えさ・肥料」「品種」「お金・経営」「命・環境への影響」に分けてみよう。<br>※ ガイダンスモードの記録は提出されません。</p>
- <div class="row" style="margin-top:12px"><button id="gag" class="big">もう一度体験する</button><button class="sub" id="gtop">別の題材を体験する</button></div></div>`;
- $('gag').onclick=()=>start(S.id);$('gtop').onclick=home;window.scrollTo(0,0);}
-
 /* ===== 写真の場面 ===== */
 const IMG_OK={};['bg_tomato','bg_madai_sea','bg_madai_land','bg_hen_cage','bg_hen_enriched','bg_hen_barn','bg_hen_free'].forEach(n=>{const im=new Image();im.onload=()=>{IMG_OK[n]=1;};im.src=IP(n);});
 const bgName=(S,c)=>S.id==='tomato'?'bg_tomato':S.id==='madai'?'bg_madai_'+c.method:'bg_hen_'+c.house;
@@ -724,8 +700,8 @@ function outcome(S,t,dl,r,deltas,m0){
   clearInterval(timer);timer=setInterval(()=>{if(!$('rt')){clearInterval(timer);return;}k+=2;rt.textContent=m.msg.slice(0,k);if(k>=m.msg.length){clearInterval(timer);fin();}},30);};
  const fin=()=>{if(!$('rt'))return;const m=msgs[i];full=true;$('rt').textContent=m.msg;$('rm').textContent=m.memo?'技術メモ：'+m.memo:'';$('ar').style.visibility='visible';if(i===msgs.length-1)ready();};
  const ready=()=>{if(readied)return;readied=true;if($('ar'))$('ar').style.visibility='hidden';$('skip').style.display='none';const nx=$('nx');nx.style.display='';
-  if(r.over){nx.textContent='▶ 結果を受け止める';nx.style.background='#444';nx.style.boxShadow='0 5px 0 #222';nx.onclick=()=>{const b=document.createElement('div');b.className='blackout';document.body.appendChild(b);setTimeout(()=>{b.remove();if(GUIDE){guideEnd(r.over);return;}G.over=r.over;bump(S.id,'over');gameOver();},1300);};}
-  else{G.last=r.L;G.t++;const end=G.t>=S.turns;if(GUIDE&&G.t>=GUIDE_TURNS){nx.textContent='🧭 体験おわり ▶';nx.onclick=()=>guideEnd(null);return;}nx.textContent=end?'🏆 結果発表へ':'次のターンへ ▶';nx.onclick=()=>end?(sfx('end'),result()):turn();}};
+  if(r.over){nx.textContent='▶ 結果を受け止める';nx.style.background='#444';nx.style.boxShadow='0 5px 0 #222';nx.onclick=()=>{const b=document.createElement('div');b.className='blackout';document.body.appendChild(b);setTimeout(()=>{b.remove();G.over=r.over;bump(S.id,'over');gameOver();},1300);};}
+  else{G.last=r.L;G.t++;const end=G.t>=S.turns;nx.textContent=end?'🏆 結果発表へ':'次のターンへ ▶';nx.onclick=()=>end?(sfx('end'),result()):turn();}};
  const adv=()=>{if(!full){clearInterval(timer);fin();return;}if(i<msgs.length-1){i++;show();}};
  $('rpg').onclick=adv;$('rpg').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();adv();}};
  $('skip').onclick=()=>{clearInterval(timer);$('rpg').outerHTML=`<div class="card" style="text-align:left;margin-top:14px">${logHtml(msgs)}</div>`;i=msgs.length-1;ready();};
@@ -872,11 +848,11 @@ function zukan(){const Z=Object.values(LS.get('bio_zukan',{}));
 function home(){G=null;who();const q=LS.get('bio_queue',[]);
  app.innerHTML=`<div class="card hero"><div class="icons"><span>🍅</span><span>🐟</span><span>🐔</span></div><h2>生物育成シミュレーター</h2><p>作物の栽培・水産生物の栽培・動物の飼育を、<b>生産者になったつもりで</b>体験しよう！<br>あなたは生物の命を預かっています。一つ一つの判断を、理由を考えて行おう。<br><b style="color:#c0392b">管理のミスや命を粗末にする選択をすると、育成はそこで終わります。</b></p></div>
  ${homeExtras()}<div class="card"><h3>あなたの情報</h3><div class="grid"><label>組<select id="kumi">${opts(8,ST.kumi)}</select></label><label>番号<select id="ban">${opts(40,ST.ban)}</select></label><label>氏名<input type="text" id="nm" value="${esc(ST.name)}"></label></div></div>
- <div class="card"><h3>題材を選ぶ</h3><label class="gtoggle ${GUIDE?'on':''}"><input type="checkbox" id="gmode" ${GUIDE?'checked':''} onchange="this.parentNode.classList.toggle('on',this.checked)"> 🧭 <b>ガイダンスモード</b>（${GUIDE_TURNS}ターンだけ体験・名前の入力と記録の提出なし）</label><div class="grid">${Object.values(SIMS).map(S=>`<button class="opt simcard" data-sim="${S.id}"><span class="band" style="background:${S.color} url(${IP({tomato:'bg_tomato',madai:'bg_madai_sea',hen:'bg_hen_free'}[S.id])}) center/cover;opacity:.75"></span><span class="ico">${S.icon}</span><span class="cnt">挑戦 ${counts(S.id).play}回</span><span class="tag">${S.cat}</span><b>${S.name}</b><span class="small">${S.intro}</span><br><span class="small"><b>💰 元手：${yen(S.capital)}</b></span></button>`).join('')}</div></div>
+ <div class="card"><h3>題材を選ぶ</h3><div class="grid">${Object.values(SIMS).map(S=>`<button class="opt simcard" data-sim="${S.id}"><span class="band" style="background:${S.color} url(${IP({tomato:'bg_tomato',madai:'bg_madai_sea',hen:'bg_hen_free'}[S.id])}) center/cover;opacity:.75"></span><span class="ico">${S.icon}</span><span class="cnt">挑戦 ${counts(S.id).play}回</span><span class="tag">${S.cat}</span><b>${S.name}</b><span class="small">${S.intro}</span><br><span class="small"><b>💰 元手：${yen(S.capital)}</b></span></button>`).join('')}</div></div>
  <div class="card"><h3>品種改良・遺伝子組換え・ゲノム編集のちがい</h3>${TECH_TABLE}</div>
  ${q.length?`<div class="card"><p>この端末に未送信の記録が${q.length}件あります。</p><button id="flush">まとめて提出する</button></div>`:''}
  ${gas()?'':'<p class="small">※ 提出先（スプレッドシート）が設定されていません。記録はこの端末に保存されます。</p>'}`;
- app.querySelectorAll('[data-sim]').forEach(b=>b.onclick=()=>{GUIDE=!!($('gmode')&&$('gmode').checked);ST={kumi:$('kumi').value.trim(),ban:$('ban').value.trim(),name:$('nm').value.trim()};if(!GUIDE&&(!ST.kumi||!ST.ban||!ST.name)){alert('組・番号を選び、氏名を入力してください。');return;}LS.set('bio_student',ST);who();start(b.dataset.sim);});
+ app.querySelectorAll('[data-sim]').forEach(b=>b.onclick=()=>{ST={kumi:$('kumi').value.trim(),ban:$('ban').value.trim(),name:$('nm').value.trim()};if(!ST.kumi||!ST.ban||!ST.name){alert('組・番号を選び、氏名を入力してください。');return;}LS.set('bio_student',ST);who();start(b.dataset.sim);});
  if($('flush'))$('flush').onclick=flush;if($('zk'))$('zk').onclick=zukan;window.scrollTo(0,0);}
 
 /* 計画 */
@@ -897,14 +873,14 @@ function plan(){const S=G.S;
  <div class="row" style="margin-top:10px"><button class="sub" id="back">計画を見直す</button><button id="go" class="big">育成スタート！</button></div></div>`;
  const ok=counter($('why'),$('whyc'),20,150);
  $('back').onclick=()=>{G.si=S.setup.length-1;setupStep();};
- $('go').onclick=()=>{if(!GUIDE&&(!$('goal').value||!ok())){alert('目標を選び、理由を20字以上で書いてください。');return;}
-  G.goal=$('goal').value;G.why=$('why').value.trim();const seed=(Date.now()^Math.floor(Math.random()*1e9))>>>0;G.rng=rngFrom(seed);G.s=S.init(G.c,G.rng);G.t=0;G.last=null;G.allLogs=[];if(!GUIDE)bump(S.id,'play');turn();};window.scrollTo(0,0);}
+ $('go').onclick=()=>{if(!$('goal').value||!ok()){alert('目標を選び、理由を20字以上で書いてください。');return;}
+  G.goal=$('goal').value;G.why=$('why').value.trim();const seed=(Date.now()^Math.floor(Math.random()*1e9))>>>0;G.rng=rngFrom(seed);G.s=S.init(G.c,G.rng);G.t=0;G.last=null;G.allLogs=[];bump(S.id,'play');turn();};window.scrollTo(0,0);}
 
 /* ターン */
 function bars(S){return S.status(G.s,G.c).map(([lb,v,u,rg,txt])=>{if(txt)return`<div class="stat">${lb}<span class="v">${typeof v==='number'?v.toLocaleString():v}${u}</span></div>`;const val=clamp(Math.round(v),0,100);let col='#2f6b4f';if(rg){if(val<rg[0]||val>rg[1])col='#a8601c';}else if(val<40)col='#8f2a2a';else if(val<70)col='#a8601c';return`<div class="stat">${lb}<span class="v">${val}${u}</span><div class="bar"><i style="width:${val}%;background:${col}"></i></div></div>`;}).join('');}
 function logHtml(L){return L.map((x,i)=>`<div class="log ${x.type}" style="animation-delay:${i*.12}s">${esc(x.msg)}${x.memo?`<span class="memo">技術メモ：${esc(x.memo)}</span>`:''}</div>`).join('');}
 function turn(){const S=G.S,t=G.t;G.s.now=t;if(G.evAt!==t){G.evAt=t;const ev=pickEvent(S,t);if(ev){eventScreen(S,t,ev);return;}}const D=S.decisions(G.s,t,G.c);
- app.innerHTML=`<div class="hud"><span>${S.icon} ${S.name}</span><span>${S.label(t)}</span>${GUIDE?`<span class="gchip">🧭 ガイダンス：あと${GUIDE_TURNS-t}ターン</span>`:''}<div class="turnbar"><i style="width:${Math.round(t/S.turns*100)}%"></i></div><span>${t+1} / ${S.turns}</span><span class="mchip ${money(S,G.s)<0?'neg':''}">💰 所持金 ${yen(money(S,G.s))}</span></div>
+ app.innerHTML=`<div class="hud"><span>${S.icon} ${S.name}</span><span>${S.label(t)}</span><div class="turnbar"><i style="width:${Math.round(t/S.turns*100)}%"></i></div><span>${t+1} / ${S.turns}</span><span class="mchip ${money(S,G.s)<0?'neg':''}">💰 所持金 ${yen(money(S,G.s))}</span></div>
  ${modChips(G.s,t)}<div class="layout"><div class="card" style="border-top:6px solid ${S.color}"><div class="scene">${S.scene(G.s,t,G.c)}</div>${bars(S)}<div class="small">${choiceText().map(esc).join('<br>')}</div></div>
  <div>${G.last?`<div class="card"><h3 style="margin-top:0">前のターンの結果</h3>${logHtml(G.last)||'<div class="log">大きな変化はありませんでした。</div>'}</div>`:''}
  <div class="card"><h3 style="margin-top:0">今の状況</h3>${S.info(G.s,t,G.c).map(x=>`<div class="info ${x.type==='n'?'':'w'}">${esc(x.msg)}</div>`).join('')}
