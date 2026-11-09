@@ -183,6 +183,41 @@ td.yen{text-align:right;white-space:nowrap}tr.sum td{font-weight:800;border-top:
 .pchips span{background:rgba(255,255,255,.9);border-radius:999px;padding:1px 10px;font-size:.78rem;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,.15)}
 .oimg{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:8px;display:block}
 @media (prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
+
+/* ===== 技術ガチャ・大勝負・トレードオフ ===== */
+.gbox{text-align:center}
+.gm{position:relative;width:240px;height:300px;margin:6px auto}
+.gm-dome{position:absolute;left:20px;top:0;width:200px;height:170px;border-radius:100px 100px 20px 20px;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.95),rgba(200,230,255,.55) 40%,rgba(150,200,240,.5));border:5px solid #e04a4a;overflow:hidden}
+.gm-dome i{position:absolute;left:var(--x);top:var(--y);width:46px;height:46px;border-radius:50%;background:linear-gradient(var(--c) 50%,#fff 50%);border:2px solid rgba(0,0,0,.15);transform:translate(-50%,-50%)}
+.gm-body{position:absolute;left:10px;top:160px;width:220px;height:130px;background:linear-gradient(#ff6a6a,#d63a3a);border-radius:14px;box-shadow:0 8px 0 #9a2412}
+.gm-handle{position:absolute;left:24px;top:30px;width:64px;height:64px;border-radius:50%;background:#fff;border:6px solid #9a2412;font-size:38px;color:#d63a3a;display:flex;align-items:center;justify-content:center;font-weight:800;transition:transform .9s cubic-bezier(.3,.7,.3,1)}
+.gm-handle.turn{transform:rotate(540deg)}
+.gm-out{position:absolute;right:22px;top:40px;width:80px;height:70px;background:#5a1a1a;border-radius:10px 10px 30px 30px}
+.cap{position:absolute;left:145px;top:150px;width:64px;height:64px;opacity:0;z-index:2}
+.cap .ct2,.cap .cb2{position:absolute;left:0;width:64px;height:32px;border:3px solid rgba(0,0,0,.2)}
+.cap .ct2{top:0;border-radius:32px 32px 0 0;background:#eee;transform-origin:10% 100%;transition:transform .5s}
+.cap .cb2{top:32px;border-radius:0 0 32px 32px;background:#fff}
+.cap.c-silver .ct2{background:linear-gradient(135deg,#fff,#b8c2cc 50%,#8a96a3)}
+.cap.c-gold .ct2{background:linear-gradient(135deg,#fff6c2,#ffd34d 45%,#c98a00)}.cap.c-gold{filter:drop-shadow(0 0 10px #ffd34d)}
+.cap.c-rainbow .ct2{background:conic-gradient(#ff4d4d,#ffb84d,#ffe24d,#4dd17a,#4da6ff,#a64dff,#ff4d4d)}.cap.c-rainbow{filter:drop-shadow(0 0 14px #fff) drop-shadow(0 0 22px #ff8ad8)}
+.cap.drop{animation:capdrop 1s cubic-bezier(.3,1.4,.5,1) forwards}
+.cap.shake{animation:capshake .25s ease-in-out infinite;opacity:1;top:225px;left:120px}
+.cap.open{animation:none;opacity:1;top:225px;left:120px}.cap.open .ct2{transform:rotate(-120deg)}
+@keyframes capdrop{0%{opacity:1;top:150px;left:145px;transform:scale(.6)}60%{top:235px;left:120px;transform:scale(1.1)}100%{opacity:1;top:225px;left:120px;transform:scale(1)}}
+@keyframes capshake{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+.tcard{max-width:360px;margin:10px auto;border-radius:18px;padding:16px;border:6px solid #9aa5b1;background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.2);animation:popin .6s both}
+.tcard.SR{border-color:#f0c64a;background:linear-gradient(160deg,#fffdf0,#ffe9a8)}
+.tcard.LR{border:6px solid transparent;background:linear-gradient(160deg,#fff,#fff0fb) padding-box,conic-gradient(#ff4d4d,#ffb84d,#ffe24d,#4dd17a,#4da6ff,#a64dff,#ff4d4d) border-box}
+.tcard .ti{font-size:64px;line-height:1.1}.tcard .tr{font-weight:800;letter-spacing:.1em}.tcard .tn{font-size:1.3rem;font-weight:800;margin:4px 0}
+@keyframes popin{from{transform:scale(.4) rotateY(180deg);opacity:0}to{transform:none;opacity:1}}
+.flash{position:fixed;inset:0;z-index:90;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,140,220,.6) 30%,rgba(120,180,255,.5) 50%,transparent 72%);animation:flash 1.6s ease both}
+@keyframes flash{0%{opacity:0;transform:scale(.2)}40%{opacity:1;transform:scale(1.4)}100%{opacity:0;transform:scale(2.4)}}
+.trade{display:block;margin-top:6px;font-size:.82rem;line-height:1.5;background:#f6f8fa;border-radius:8px;padding:4px 8px;text-align:left}
+.trade .tg{color:#1a8a4d;font-weight:700}.trade .tb{color:#c0392b;font-weight:700}
+.coin{font-size:90px;display:inline-block;animation:coinflip 1.6s ease-out both}
+@keyframes coinflip{0%{transform:rotateY(0) scale(.6)}80%{transform:rotateY(1800deg) scale(1.2)}100%{transform:rotateY(1800deg) scale(1)}}
+.bal{display:grid;grid-template-columns:150px 1fr 40px;gap:6px 10px;align-items:center;margin:8px 0}
+.bal .bb{height:18px;background:#eef2f5;border-radius:999px;overflow:hidden}.bal .bb i{display:block;height:100%;border-radius:999px;transition:width 1s}
 </style>
 </head>
 <body>
@@ -535,7 +570,7 @@ const HEN={
   s.shell=clamp(s.shell,50,95);
   const broken=clamp((88-s.shell)/80,0,.5);
   if(broken>.05)add('warn',`殻がうすく、約${Math.round(broken*100)}%の卵が割れて出荷できませんでした。`,'年をとった鶏や暑さ、栄養不足で殻がうすくなります。カルシウムを強化した飼料で改善できます。');
-  const eggs=s.hens*rate*28,sold=eggs*(1-broken);
+  const eggs=s.hens*rate*28*M(s,'yield'),sold=eggs*(1-broken);
   s.eggs+=eggs;s.sold+=sold;
   s.sales+=sold*{cage:20,enriched:25,barn:30,free:36}[h]*(c.breed==='cochin'?1.3:1)*M(s,'price');
   add('good',`産卵率 ${Math.round(rate*100)}%：約${Math.round(eggs).toLocaleString()}個の卵を生産しました。`,'');
@@ -712,6 +747,9 @@ function outcome(S,t,dl,r,deltas,m0){
 const pay=(s,n,y,h)=>payCosts(s,[[n,y,h||0]],true);
 const EV={
  tomato:[
+  {id:'shobu',icon:'🎲',title:'経営の大勝負！',when:()=>false,text:'ほかの産地も出荷をふやしそうです。スーパーと値段を決めて売る「契約販売」にするか、市場の値上がりに賭けて全部を市場に出すか、決めてください。',choices:[
+   {label:'🛡️ 契約販売で安全に',hint:'4週間 売値×1.1（確実）',go:s=>{addMod(s,'price',1.1,4,'🛡️ 契約販売：売値×1.1');return['堅実な道を選びました。','契約販売は、値段が安定するかわりに大もうけもない。安定と大きな利益はトレードオフの関係。']}},
+   {label:'🔥 市場に賭ける',hint:'50%で4週間 売値×1.8／50%で×0.5',go:s=>{sfx('me');if(Math.random()<.5){addMod(s,'price',1.8,4,'🔥 大勝負成功：売値×1.8');return['🎉 大成功！ 読みが当たって、値段が大きく上がりました！','市場の値段は、全国の出荷量で大きく変わる。大きなもうけをねらうと、大きく損をするリスクもある。']}addMod(s,'price',0.5,4,'💥 大勝負失敗：売値×0.5');return['💥 失敗… 値段が大きく下がってしまいました。','市場の値段は、全国の出荷量で大きく変わる。大きなもうけをねらうと、大きく損をするリスクもある。']}}]},
   {id:'brand',icon:'🏅',title:'ブランド認定のチャンス！',when:(s,t)=>t>=7&&t<=11&&s.sugarKg>0&&s.sugarSum/s.sugarKg>=8.8&&s.health>=70,text:'あなたのミニトマトの甘さが評判になり、「地域ブランド」に認定される話が来ました。検査とロゴ入りパッケージに3万円かかりますが、これからずっと売値が1.8倍になります！',choices:[
    {label:'認定を受ける',hint:'💰3万円（以後ずっと売値×1.8）',go:s=>{pay(s,'ブランド認定・パッケージ',30000);addMod(s,'price',1.8,99,'🏅 地域ブランド：売値×1.8');s.brand=true;return['地域ブランドに認定されました！','品質を高めて「ブランド」にすると、高い値段で売れるようになります。よい管理を続けた成果です。']}},
    {label:'受けない',hint:'',go:()=>['今回は見送りました。','']}]},
@@ -739,6 +777,9 @@ const EV={
    {label:'申請する',hint:'⏱10時間（条件に合えば3万円）',go:(s,c)=>{pay(s,'補助金の書類作成',0,10);if(c.soil==='taihi'){s.extra=(s.extra||0)+30000;return['補助金3万円が採択されました！','堆肥で土づくりをしていたことが評価されました。'];}return['条件（堆肥による土づくり）に合わず、採択されませんでした。','補助金には条件があります。']}},
    {label:'申請しない',hint:'',go:()=>['今回は申請しませんでした。','']}]}],
  madai:[
+  {id:'shobu',icon:'🎲',title:'経営の大勝負！',when:()=>false,text:'出荷の時期を考える大事な場面です。決まった値段で買い取る「契約」にするか、年末の高値に賭けて市場で売るか、決めてください。',choices:[
+   {label:'🛡️ 契約で安全に',hint:'出荷時の値段×1.1（確実）',go:s=>{addMod(s,'price',1.1,99,'🛡️ 契約：値段×1.1');return['堅実な道を選びました。','契約は値段が安定するかわりに大もうけもない。安定と大きな利益はトレードオフの関係。']}},
+   {label:'🔥 年末の高値に賭ける',hint:'50%で出荷時の値段×1.6／50%で×0.6',go:s=>{sfx('me');if(Math.random()<.5){addMod(s,'price',1.6,99,'🔥 大勝負成功：値段×1.6');return['🎉 大成功！ 読みが当たって、値段が大きく上がりました！','需要の多い時期は値段が上がるが、ほかの生産者も出荷を合わせると値段が下がることもある。']}addMod(s,'price',0.6,99,'💥 大勝負失敗：値段×0.6');return['💥 失敗… 値段が大きく下がってしまいました。','需要の多い時期は値段が上がるが、ほかの生産者も出荷を合わせると値段が下がることもある。']}}]},
   {id:'brand',icon:'🏅',title:'ブランド鯛のチャンス！',when:(s,t)=>t>=10&&s.health>=80&&s.clean>=55&&s.n/s.n0>=.9,text:'身のしまりと色のよさが評価され、「ブランド鯛」に認定される話が来ました。検査と出荷基準を守るために20万円かかりますが、出荷時の値段が1.8倍になります！',choices:[
    {label:'認定を受ける',hint:'💰20万円（出荷時の値段×1.8）',go:s=>{pay(s,'ブランド認定・検査',200000);addMod(s,'price',1.8,99,'🏅 ブランド鯛：出荷時の値段×1.8');s.brand=true;return['ブランド鯛に認定されました！','水質管理と健康管理を続けた成果です。品質が高いと、高い値段で売れます。']}},
    {label:'受けない',hint:'',go:()=>['今回は見送りました。','']}]},
@@ -760,6 +801,9 @@ const EV={
    {label:'申請する',hint:'⏱12時間（補助金10万円）',go:s=>{pay(s,'補助金の書類・記録',0,12);s.extra=(s.extra||0)+100000;return['補助金10万円が採択されました！','センサーやデータを使う「スマート水産業」が進められています。']}},
    {label:'申請しない',hint:'',go:()=>['今回は申請しませんでした。','']}]}],
  hen:[
+  {id:'shobu',icon:'🎲',title:'経営の大勝負！',when:()=>false,text:'卵の値段が上下しています。洋菓子店と値段を決めて売る「契約」にするか、値上がりに賭けて市場で売るか、決めてください。',choices:[
+   {label:'🛡️ 契約で安全に',hint:'5ターン 売値×1.1（確実）',go:s=>{addMod(s,'price',1.1,5,'🛡️ 契約：売値×1.1');return['堅実な道を選びました。','契約は値段が安定するかわりに大もうけもない。安定と大きな利益はトレードオフの関係。']}},
+   {label:'🔥 市場に賭ける',hint:'50%で5ターン 売値×1.7／50%で×0.6',go:s=>{sfx('me');if(Math.random()<.5){addMod(s,'price',1.7,5,'🔥 大勝負成功：売値×1.7');return['🎉 大成功！ 読みが当たって、値段が大きく上がりました！','卵の値段は、病気の流行や季節で大きく変わる。大きなもうけをねらうと、大きく損をするリスクもある。']}addMod(s,'price',0.6,5,'💥 大勝負失敗：売値×0.6');return['💥 失敗… 値段が大きく下がってしまいました。','卵の値段は、病気の流行や季節で大きく変わる。大きなもうけをねらうと、大きく損をするリスクもある。']}}]},
   {id:'brand',icon:'🏅',title:'ブランド卵のチャンス！',when:(s,t)=>t>=4&&s.health>=85&&s.stress<30,text:'鶏の健康と卵の質が評価され、ブランド卵として売り出す話が来ました。認定とパッケージに15万円かかりますが、これからずっと売値が上がります（ケージ飼い以外なら×1.2、ケージ飼いは×1.1）！',choices:[
    {label:'認定を受ける',hint:'💰15万円（以後ずっと売値アップ）',go:(s,c)=>{pay(s,'ブランド認定・パッケージ',150000);const v=c.house==='cage'?1.1:1.2;addMod(s,'price',v,99,`🏅 ブランド卵：売値×${v}`);s.brand=true;return['ブランド卵に認定されました！',c.house==='cage'?'品質のよさが評価されました。鶏の快適さに配慮した飼い方だと、さらに高く評価されることもあります。':'鶏の健康と快適さに配慮した飼い方が、卵の価値を高めました。']}},
    {label:'受けない',hint:'',go:()=>['今回は見送りました。','']}]},
@@ -783,7 +827,7 @@ const EV={
    {label:'交換する',hint:'💰8万円（以後、照明の電気代×0.5）',go:s=>{pay(s,'LED照明',80000);addMod(s,'light',.5,99,'💡 LED照明：照明の電気代×0.5');return['LED照明に交換しました。','省エネルギーの設備は、電気代と環境への負荷を減らします。ただし、元を取るには時間がかかります。']}},
    {label:'交換しない',hint:'',go:()=>['今回は見送りました。','']}]}]
 };
-function pickEvent(S,t){if(t===0||Math.random()>.42)return null;const done=G.s.evDone||(G.s.evDone=[]);const L=(EV[S.id]||[]).filter(e=>!done.includes(e.id)&&e.when(G.s,t,G.c));if(!L.length)return null;const B=L.filter(e=>e.id==='brand'||e.id==='expand');const e=B.length&&Math.random()<.6?B[Math.floor(Math.random()*B.length)]:L[Math.floor(Math.random()*L.length)];done.push(e.id);return e;}
+function pickEvent(S,t){const done=G.s.evDone||(G.s.evDone=[]);const sh=(EV[S.id]||[]).find(e=>e.id==='shobu');if(sh&&!done.includes('shobu')&&t===Math.round(S.turns*.6)){done.push('shobu');return sh;}if(t===0||Math.random()>.42)return null;const L=(EV[S.id]||[]).filter(e=>!done.includes(e.id)&&e.when(G.s,t,G.c));if(!L.length)return null;const B=L.filter(e=>e.id==='brand'||e.id==='expand');const e=B.length&&Math.random()<.6?B[Math.floor(Math.random()*B.length)]:L[Math.floor(Math.random()*L.length)];done.push(e.id);return e;}
 function modChips(s,t){const L=(s.mods||[]).filter(m=>t>=m.from&&t<=m.until);return L.length?`<div class="mods">${L.map(m=>`<span class="modchip">${m.label}<small>${m.until>=999?'ずっと':'あと'+(m.until-t+1)+'ターン'}</small></span>`).join('')}</div>`:'';}
 function eventScreen(S,t,ev){
  app.innerHTML=`<div class="hud"><span>${S.icon} ${S.name}</span><span>${S.label(t)}</span><span class="mchip ${money(S,G.s)<0?'neg':''}">💰 所持金 ${yen(money(S,G.s))}</span></div>
@@ -796,6 +840,91 @@ function eventScreen(S,t,ev){
   <div style="text-align:center">${dm?`<div class="moneybox">💰 所持金 <b>${yen(m1)}</b><span class="md ${dm>=0?'g':'b'}">${dm>=0?'＋':'－'}${yen(Math.abs(dm))}</span></div>`:''}${modChips(G.s,t)}<div style="margin-top:14px"><button id="evgo" class="big">管理を決める ▶</button></div></div>`;
   $('evgo').onclick=()=>turn();});
  window.scrollTo(0,0);}
+
+
+/* ===== トレードオフ（よい面 ⇔ マイナスの面） ===== */
+const TRADE={
+ tomato:{breed:{tasyu:['収穫量が多い','甘さはふつうで、売値も標準'],kotoudo:['甘くて高く売れる','収穫量が少なく、実が割れやすい'],teikou:['病気に強い','苗代が高い'],gaba:['健康によい成分が多い','苗代が高く、消費者の理解も必要']},
+  soil:{taihi:['団粒構造になり、根がよく育つ','費用と手間がかかる'],kagaku:['安くて手軽','土が固くなりやすい'],none:['費用も手間もかからない','根が広がらず、育ちが悪い']},
+  lime:{yes:['トマトに合ったpHになる','費用がかかる'],no:['費用がかからない','酸性の土で育ちが悪くなる']},
+  base:{balance:['バランスよく育つ','肥料代がかかる'],nmany:['葉や茎がよく育つ','育ちすぎて実がつきにくい（つるぼけ）'],none:['肥料代がかからない','養分が足りなくなる']}},
+ madai:{method:{sea:['費用が安い','赤潮や台風の影響を受ける'],land:['水温を一定にでき、赤潮や台風の影響がない','電気代などの費用が大きく、環境への負荷もある']},
+  seed:{wild:['稚魚が安い','成長が遅く、天然の資源を減らす'],sel:['成長が速い','稚魚がやや高い'],genome:['食べられる部分が多く、えさのむだが少ない','稚魚が高く、消費者の理解も必要']},
+  vaccine:{yes:['病気を予防できる','費用と注射の手間がかかる'],no:['費用がかからない','病気が流行すると大きな被害']},
+  density:{low:['魚が健康で、水も汚れにくい','出荷量が少ない'],std:['バランスがよい','特に大きな強みはない'],high:['出荷量が多い','水が汚れ、病気やストレスがふえる']}},
+ hen:{breed:{white:['卵をたくさん産む','鶏の体への負担が大きい'],brown:['赤玉で人気がある','白色卵の品種よりえさを多く食べる'],cochin:['卵が高く売れる','産む数が少ない']},
+  house:{cage:['費用が安く、衛生管理がしやすい','鶏が自由に動けない（アニマルウェルフェア）'],enriched:['鶏が本来の行動をある程度できる','従来のケージより費用がかかる'],barn:['鶏のストレスが少ない','広い面積と手間、ふんの管理が必要'],free:['もっとも自然に近い飼い方','病気や天候の危険があり、手間も大きい']},
+  vaccine:{yes:['伝染病を予防できる','費用がかかる'],no:['費用がかからない','伝染病が発生するおそれ']}}};
+const tradeHtml=(S,key,id)=>{const x=((TRADE[S.id]||{})[key]||{})[id];return x?`<span class="trade"><span class="tg">⭕ ${x[0]}</span><br><span class="tb">⚠️ ${x[1]}</span></span>`:'';};
+
+/* ===== 技術ガチャ（育成中に3回） ===== */
+const GACHA={
+ tomato:{R:[
+  {i:'🕸️',n:'防虫ネット',m:'畑をネットでおおい、害虫が入るのを防ぐ（物理的防除）。4週間、アブラムシがふえにくい。',go:s=>{addMod(s,'pest',.5,4,'🕸️ 防虫ネット');s.pest=0;}},
+  {i:'🎞️',n:'マルチシート',m:'土の表面をシートでおおい、地温を保ち雑草をおさえる。4週間、収穫量×1.1。',go:s=>addMod(s,'yield',1.1,4,'🎞️ マルチ：収穫量×1.1')},
+  {i:'💛',n:'黄色い粘着シート',m:'害虫が黄色に集まる性質を利用してつかまえる。4週間、害虫がふえにくい。',go:s=>{addMod(s,'pest',.7,4,'💛 粘着シート');}}],
+ SR:[
+  {i:'🏠',n:'環境制御ハウス',m:'温度・湿度・CO2をセンサーで管理する。6週間、収穫量×1.3、株も元気に。',go:s=>{addMod(s,'yield',1.3,6,'🏠 環境制御：収穫量×1.3');s.health=Math.min(100,s.health+10);}},
+  {i:'🐞',n:'天敵の常駐（バンカー法）',m:'天敵がすみ続けられる植物を畑に植え、害虫をずっと減らす（生物的防除）。',go:s=>{addMod(s,'pest',.3,99,'🐞 天敵の常駐');s.envPlus=(s.envPlus||0)+1;}},
+  {i:'📱',n:'直売アプリで予約販売',m:'スマホで予約を受けて新鮮なまま売る。4週間、売値×1.3。',go:s=>addMod(s,'price',1.3,4,'📱 予約販売：売値×1.3')}],
+ LR:[
+  {i:'🤖',n:'スマート農業システム',m:'AIとロボットが水やりや生育を管理！ これからずっと収穫量×1.6、水やりの作業0時間。',go:s=>{addMod(s,'yield',1.6,99,'🤖 スマート農業：収穫量×1.6');addMod(s,'water',0,99,'🤖 自動かん水');}},
+  {i:'🌟',n:'奇跡の高糖度新品種',m:'品種改良で、甘さも収穫量も最高の新品種が誕生！ これからずっと売値×2。',go:s=>addMod(s,'price',2,99,'🌟 奇跡の新品種：売値×2')}]},
+ madai:{R:[
+  {i:'🌡️',n:'水温・酸素センサー',m:'水の状態をスマホで見守り、異常にすぐ気づける。魚の健康と水のきれいさが回復。',go:s=>{s.health=Math.min(100,s.health+10);s.clean=Math.min(100,s.clean+10);}},
+  {i:'🫧',n:'自動の酸素供給',m:'酸素が足りなくなると自動で空気を送る。魚の健康が大きく回復。',go:s=>{s.health=Math.min(100,s.health+15);}},
+  {i:'🌱',n:'魚粉を減らしたえさ',m:'大豆などの植物性の原料を使ったえさ。4か月、えさ代×0.85。',go:s=>{addMod(s,'feed',.85,4,'🌱 植物性のえさ：えさ代×0.85');s.envPlus=(s.envPlus||0)+1;}}],
+ SR:[
+  {i:'🤖',n:'AI給餌システム',m:'魚の食べ方をカメラで見て、AIがちょうどよい量をあたえる。これからずっと、えさ代×0.7・食べ残し減。',go:s=>{addMod(s,'feed',.7,99,'🤖 AI給餌：えさ代×0.7');addMod(s,'foul',.8,99,'🤖 AI給餌：食べ残し減');}},
+  {i:'🚁',n:'水中ドローンで見回り',m:'いけすの中をドローンで見回り、病気や網の破れを早く見つける。健康と水のきれいさが大きく回復。',go:s=>{s.health=Math.min(100,s.health+25);s.clean=Math.min(100,s.clean+20);}},
+  {i:'✈️',n:'海外の高級レストランと契約',m:'日本のマダイは海外でも人気。これからずっと出荷時の値段×1.4。',go:s=>addMod(s,'price',1.4,99,'✈️ 海外契約：値段×1.4')}],
+ LR:[
+  {i:'🐟',n:'成長スピード新技術',m:'選抜育種とゲノム編集の研究が実を結んだ！ これからずっと成長×1.6。',go:s=>addMod(s,'yield',1.6,99,'🐟 新技術：成長×1.6')},
+  {i:'🌟',n:'世界ブランド鯛',m:'世界の料理人が認めるブランドに！ これからずっと出荷時の値段×2。',go:s=>addMod(s,'price',2,99,'🌟 世界ブランド：値段×2')}]},
+ hen:{R:[
+  {i:'🌬️',n:'換気センサー',m:'アンモニアや温度を測って自動で換気する。鶏舎の空気がきれいになり、ストレスが下がる。',go:s=>{s.amm=0;s.stress=Math.max(0,s.stress-15);}},
+  {i:'🥚',n:'自動集卵ベルト',m:'卵を自動で集める。これからずっと、毎日の世話の時間×0.7。',go:s=>addMod(s,'care',.7,99,'🥚 自動集卵：世話の時間×0.7')},
+  {i:'🦴',n:'カキ殻のカルシウム',m:'カキの殻をえさにまぜてカルシウムを補う。卵の殻が強くなる。',go:s=>{s.shell=Math.min(95,s.shell+10);s.envPlus=(s.envPlus||0)+1;}}],
+ SR:[
+  {i:'📷',n:'AIカメラで健康チェック',m:'鶏の動きをAIが見守り、病気の兆しを早く見つける。健康が大きく回復し、ストレスも下がる。',go:s=>{s.health=Math.min(100,s.health+25);s.stress=Math.max(0,s.stress-20);}},
+  {i:'🏅',n:'アニマルウェルフェア認証',m:'鶏の快適さに配慮した農場として認められた。これからずっと売値×1.3。',go:s=>addMod(s,'price',1.3,99,'🏅 AW認証：売値×1.3')},
+  {i:'♻️',n:'鶏ふん堆肥の販売',m:'鶏ふんを堆肥にして農家に売る。資源がめぐる「循環型」の取り組みで15万円の収入。',go:s=>{s.extra=(s.extra||0)+150000;s.envPlus=(s.envPlus||0)+1;}}],
+ LR:[
+  {i:'🌟',n:'暑さに強い新品種',m:'品種改良で、暑さに強くたくさん産む鶏が誕生！ これからずっと産卵数×1.4。',go:s=>addMod(s,'yield',1.4,99,'🌟 新品種：産卵数×1.4')},
+  {i:'👑',n:'世界の卵ブランド',m:'「卵かけごはん」が世界で大人気！ これからずっと売値×2。',go:s=>addMod(s,'price',2,99,'👑 世界ブランド：売値×2')}]}};
+const RAR={R:{n:'レア',cap:'silver',st:'★'},SR:{n:'スーパーレア',cap:'gold',st:'★★'},LR:{n:'レジェンドレア',cap:'rainbow',st:'★★★'}};
+const gachaTurns=S=>[Math.round(S.turns*.2),Math.round(S.turns*.5),Math.round(S.turns*.8)];
+function rollRar(){const x=Math.random();return x<.05?'LR':x<.40?'SR':'R';}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function gachaScreen(S,t){const rar=rollRar(),card=GACHA[S.id][rar][Math.floor(Math.random()*GACHA[S.id][rar].length)],R=RAR[rar];
+ app.innerHTML=`<div class="hud"><span>${S.icon} ${S.name}</span><span>${S.label(t)}</span><span class="mchip ${money(S,G.s)<0?'neg':''}">💰 所持金 ${yen(money(S,G.s))}</span></div>
+ <div class="card gbox"><div class="evhead">🎰 技術ガチャ（新しい技術の導入チャンス）</div>
+ <div class="gm"><div class="gm-dome"><i style="--x:20%;--y:55%;--c:#c9d1d9"></i><i style="--x:45%;--y:65%;--c:#ffd34d"></i><i style="--x:68%;--y:52%;--c:#c9d1d9"></i><i style="--x:33%;--y:35%;--c:#ff8ad8"></i><i style="--x:58%;--y:30%;--c:#c9d1d9"></i><i style="--x:75%;--y:70%;--c:#ffd34d"></i></div><div class="gm-body"><div class="gm-handle" id="gh">✚</div><div class="gm-out"></div></div><div class="cap" id="cap"><div class="ct2"></div><div class="cb2"></div></div></div>
+ <p class="small">シルバー＝レア（60%）／ゴールド＝スーパーレア（35%）／レインボー＝レジェンドレア（5%）</p>
+ <div id="gres"><button id="gturn" class="big">ハンドルを回す！</button></div></div>`;
+ banner('🎰 技術ガチャ！','新しい技術を手に入れよう','#c2185b');window.scrollTo(0,0);
+ $('gturn').onclick=async()=>{$('gturn').disabled=true;sfx('me');$('gh').classList.add('turn');await sleep(900);
+  const cap=$('cap');cap.classList.add('drop','c-'+R.cap);await sleep(1000);cap.classList.add('shake');await sleep(rar==='LR'?1800:1100);
+  if(rar==='LR'){const f=document.createElement('div');f.className='flash';document.body.appendChild(f);setTimeout(()=>f.remove(),1700);confetti();}
+  cap.classList.add('open');sfx(rar==='R'?'good':'end');await sleep(600);
+  const m0=money(S,G.s);card.go(G.s,G.c,t);(G.s.evLog=G.s.evLog||[]).push(`技術ガチャ：${card.n}（${R.n}）`);(G.s.cards=G.s.cards||[]).push({...card,rar});collect(S,'技術ガチャ：'+card.n,card.m);
+  const dm=money(S,G.s)-m0;
+  $('gres').innerHTML=`<div class="tcard ${rar}"><div class="tr">${R.st} ${R.n} ${R.st}</div><div class="ti">${card.i}</div><div class="tn">${card.n}</div><div class="small" style="text-align:left">${card.m}</div></div>
+  ${dm?`<div class="moneybox">💰 所持金 <b>${yen(money(S,G.s))}</b><span class="md g">＋${yen(dm)}</span></div>`:''}${modChips(G.s,t)}<div style="margin-top:12px"><button id="ggo" class="big">管理を決める ▶</button></div>`;
+  $('ggo').onclick=()=>turn();};}
+
+/* ===== 経営のバランス（トレードオフ） ===== */
+function balance(S,s,c){const m=money(S,s),ratio=m/S.capital,st=(v,th)=>v>=th[0]?5:v>=th[1]?4:v>=th[2]?3:v>=th[3]?2:1;
+ const inc=st(ratio,[2,1.5,1.1,.9]);let hl,env=3,lab;const hpt=(s.hours||0)/S.turns,ep=s.envPlus||0;
+ if(S.id==='tomato'){hl=st(s.health,[85,70,55,40]);env+=(c.soil==='taihi'?1:c.soil==='kagaku'?-1:0)+(c.base==='nmany'?-1:0)+(s.evLog||[]).filter(x=>/天敵/.test(x)).length;const pes=Object.entries(s.book||{}).filter(([k])=>/農薬/.test(k)).reduce((a,x)=>a+x[1],0);if(pes>20000)env--;lab=st(-hpt,[-4,-6,-8,-10]);}
+ else if(S.id==='madai'){hl=st(s.health*(s.n/s.n0),[85,70,55,40]);env+=(c.method==='land'?-1:0)+(c.density==='high'?-1:c.density==='low'?1:0)+(c.seed==='wild'?-1:0)+(c.vaccine==='yes'?1:0);lab=st(-hpt,[-25,-35,-45,-60]);}
+ else{const aw={cage:1,enriched:3,barn:4,free:5}[c.house];hl=Math.round((st(s.health,[85,70,55,40])+aw)/2);env+=(c.house==='barn'||c.house==='free'?1:0)+(s.ammHi>2?-1:0);lab=st(-hpt,[-40,-60,-90,-120]);}
+ env=Math.max(1,Math.min(5,env+ep));
+ return[['💰 収入（もうけ）',inc,'#e0a92e'],['🌍 環境へのやさしさ',env,'#4cc38a'],[S.id==='hen'?'🐔 鶏の健康・快適さ':S.id==='madai'?'🐟 魚の健康':'🌱 作物の健康',hl,'#4aa3df'],['⏱ 手間の少なさ（省力）',lab,'#b06ad9']];}
+function balanceHtml(S){const B=balance(S,G.s,G.c),hi=B.filter(x=>x[1]>=4).map(x=>x[0].slice(2).trim()),lo=B.filter(x=>x[1]<=2).map(x=>x[0].slice(2).trim());
+ return`<div class="card"><h3 style="margin-top:0">⚖️ あなたの経営のバランス（トレードオフ）</h3>${B.map(x=>`<div class="bal"><span>${x[0]}</span><div class="bb"><i style="width:${x[1]*20}%;background:${x[2]}"></i></div><b>${x[1]}</b></div>`).join('')}
+ <p>${hi.length?`「${hi.join('」「')}」が高く、`:''}${lo.length?`「${lo.join('」「')}」が低めでした。`:'大きなかたよりの少ない経営でした。'}</p>
+ <p class="small">どれかを高めると、別のどれかが下がることがあります（トレードオフ）。例：人の手がかからない⇔仕事がへる／生産量がふえた⇔コスト・環境問題／効率よくできる⇔生き物の健康。どの立場を大切にするかで、「よい育て方」は変わります。（目安の評価です）</p></div>`;}
 
 /* ===== 称号・バッジ・図鑑 ===== */
 const RANKS=[[4,'💎','大富豪'],[2.5,'👑','ブランド経営者'],[1.6,'⭐','評判の生産者'],[1,'🧑‍🌾','一人前の生産者'],[-1e9,'🌱','見習い生産者']];
@@ -860,7 +989,7 @@ function start(id){G={S:SIMS[id],c:{},si:0};setupStep();}
 function setupStep(){const S=G.S,st=S.setup[G.si];
  app.innerHTML=`<div class="card"><div class="prog">${S.name} ／ 育成計画 ${G.si+1}/${S.setup.length}</div><h2>${st.title}</h2>${G.si===0?`<p>${S.intro}</p>`:''}
  ${st.tech?`<details open style="margin-bottom:10px"><summary>品種改良・遺伝子組換え・ゲノム編集のちがい</summary>${TECH_TABLE}</details>`:''}
- <div class="grid">${st.options.map(o=>`<button class="opt ${o.disabled?'dis':''} ${G.c[st.key]===o.id?'sel':''}" data-o="${o.id}" ${o.disabled?'aria-disabled="true"':''}>${optImg(G.S,st,o)}${(o.tags||[]).map(tg=>`<span class="tag ${tg==='ゲノム編集'?'ge':tg==='遺伝子組換え'?'gm':''}">${tg}</span>`).join('')}<b>${o.label}</b><span class="small">${o.desc}</span></button>`).join('')}</div>
+ <div class="grid">${st.options.map(o=>`<button class="opt ${o.disabled?'dis':''} ${G.c[st.key]===o.id?'sel':''}" data-o="${o.id}" ${o.disabled?'aria-disabled="true"':''}>${optImg(G.S,st,o)}${(o.tags||[]).map(tg=>`<span class="tag ${tg==='ゲノム編集'?'ge':tg==='遺伝子組換え'?'gm':''}">${tg}</span>`).join('')}<b>${o.label}</b><span class="small">${o.desc}</span>${tradeHtml(G.S,st.key,o.id)}</button>`).join('')}</div>
  <div class="row" style="margin-top:12px"><button class="sub" id="back">戻る</button><button id="next" ${G.c[st.key]?'':'disabled'}>次へ</button></div></div>`;
  app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const o=st.options.find(x=>x.id===b.dataset.o);if(o.disabled){alert(o.desc);return;}G.c[st.key]=o.id;setupStep();});
  $('back').onclick=()=>{if(G.si===0)home();else{G.si--;setupStep();}};
@@ -879,7 +1008,7 @@ function plan(){const S=G.S;
 /* ターン */
 function bars(S){return S.status(G.s,G.c).map(([lb,v,u,rg,txt])=>{if(txt)return`<div class="stat">${lb}<span class="v">${typeof v==='number'?v.toLocaleString():v}${u}</span></div>`;const val=clamp(Math.round(v),0,100);let col='#2f6b4f';if(rg){if(val<rg[0]||val>rg[1])col='#a8601c';}else if(val<40)col='#8f2a2a';else if(val<70)col='#a8601c';return`<div class="stat">${lb}<span class="v">${val}${u}</span><div class="bar"><i style="width:${val}%;background:${col}"></i></div></div>`;}).join('');}
 function logHtml(L){return L.map((x,i)=>`<div class="log ${x.type}" style="animation-delay:${i*.12}s">${esc(x.msg)}${x.memo?`<span class="memo">技術メモ：${esc(x.memo)}</span>`:''}</div>`).join('');}
-function turn(){const S=G.S,t=G.t;G.s.now=t;if(G.evAt!==t){G.evAt=t;const ev=pickEvent(S,t);if(ev){eventScreen(S,t,ev);return;}}const D=S.decisions(G.s,t,G.c);
+function turn(){const S=G.S,t=G.t;G.s.now=t;if(G.gAt!==t){G.gAt=t;if(gachaTurns(S).includes(t)&&t<S.turns){gachaScreen(S,t);return;}}if(G.evAt!==t){G.evAt=t;const ev=pickEvent(S,t);if(ev){eventScreen(S,t,ev);return;}}const D=S.decisions(G.s,t,G.c);
  app.innerHTML=`<div class="hud"><span>${S.icon} ${S.name}</span><span>${S.label(t)}</span><div class="turnbar"><i style="width:${Math.round(t/S.turns*100)}%"></i></div><span>${t+1} / ${S.turns}</span><span class="mchip ${money(S,G.s)<0?'neg':''}">💰 所持金 ${yen(money(S,G.s))}</span></div>
  ${modChips(G.s,t)}<div class="layout"><div class="card" style="border-top:6px solid ${S.color}"><div class="scene">${S.scene(G.s,t,G.c)}</div>${bars(S)}<div class="small">${choiceText().map(esc).join('<br>')}</div></div>
  <div>${G.last?`<div class="card"><h3 style="margin-top:0">前のターンの結果</h3>${logHtml(G.last)||'<div class="log">大きな変化はありませんでした。</div>'}</div>`:''}
@@ -922,7 +1051,7 @@ function result(){const S=G.S,R=S.result(G.s,G.c),total=R.axes.reduce((a,x)=>a+x
  <table><tr><th>評価の観点</th><th>評価</th><th>内容</th></tr>${R.axes.map((x,i)=>`<tr><td>${x[0]}</td><td class="stars">${starsAnim(x[1],i)}</td><td>${esc(x[2])}</td></tr>`).join('')}<tr><th>合計</th><th><span class="total">${total}</span> / 20</th><th>${best!==null?(total>best?`これまでの最高（${best}）を更新しました。`:`これまでの最高は${best}です。`):'初めての記録です。'}</th></tr></table>
  <h3>💰 費用の内訳</h3><table>${Object.entries(G.s.book||{}).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="yen">${yen(v)}</td><td style="width:40%"><div class="bar"><i style="width:${Math.round(v/G.s.cost*100)}%;background:#e0a92e"></i></div></td></tr>`).join('')}<tr class="sum"><td>合計（作業時間 ${Math.round(G.s.hours||0).toLocaleString()}時間）</td><td class="yen">${yen(G.s.cost)}</td><td></td></tr></table>
  <div style="margin-top:10px">${chartSvg(R.chart.vals,R.chart.label,S.color)}</div></div>
- ${EX.html}<div class="card"><h3 style="margin-top:0">この題材で学べる技術</h3><ul>${R.points.map(p=>`<li>${p}</li>`).join('')}<li>よい管理には、資材や光熱費だけでなく人の作業時間（人件費）もかかります。効果と費用のバランス（トレードオフ）を考えて技術を選ぶことが大切です。</li></ul>
+ ${balanceHtml(S)}${EX.html}<div class="card"><h3 style="margin-top:0">この題材で学べる技術</h3><ul>${R.points.map(p=>`<li>${p}</li>`).join('')}<li>よい管理には、資材や光熱費だけでなく人の作業時間（人件費）もかかります。効果と費用のバランス（トレードオフ）を考えて技術を選ぶことが大切です。</li></ul>
  <p class="small">すべての観点で★5を取るのは難しく、どれかを高めると別のどれかが下がることがあります。${low.length?`今回は「${low.join('」「')}」が低めでした。`:''}品種や方法を変えて、もう一度挑戦して比べてみましょう。</p>
  ${prev.length?`<h3>これまでの記録</h3><table><tr><th>日時</th><th>設定</th><th>合計</th></tr>${prev.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.setting)}</td><td>${x.total}</td></tr>`).join('')}</table>`:''}</div>
  <div class="card"><h3 style="margin-top:0">振り返り</h3>
