@@ -218,6 +218,14 @@ td.yen{text-align:right;white-space:nowrap}tr.sum td{font-weight:800;border-top:
 @keyframes coinflip{0%{transform:rotateY(0) scale(.6)}80%{transform:rotateY(1800deg) scale(1.2)}100%{transform:rotateY(1800deg) scale(1)}}
 .bal{display:grid;grid-template-columns:150px 1fr 40px;gap:6px 10px;align-items:center;margin:8px 0}
 .bal .bb{height:18px;background:#eef2f5;border-radius:999px;overflow:hidden}.bal .bb i{display:block;height:100%;border-radius:999px;transition:width 1s}
+
+.shacho{display:flex;gap:10px;align-items:flex-end;margin:8px 0}
+.shacho .sface{width:78px;flex:none;background:#ffedd5;border:3px solid #c2410c;border-radius:16px;overflow:hidden;line-height:0}
+.shacho .sface svg{width:100%;height:auto;display:block}
+.shacho .sbub{position:relative;background:#fff;border:3px solid #c2410c;border-radius:16px;padding:8px 14px;font-weight:700;line-height:1.6;flex:1}
+.shacho .sbub:before{content:"";position:absolute;left:-12px;bottom:18px;border:9px solid transparent;border-right-color:#c2410c}
+.shacho .sname{display:block;font-size:.75rem;color:#c2410c;letter-spacing:.05em}
+.shacho.big .sface{width:120px}
 </style>
 </head>
 <body>
@@ -605,7 +613,7 @@ const gas=()=>new URLSearchParams(location.search).get('gas')||GAS_URL;
 let ST=LS.get('bio_student',{kumi:'',ban:'',name:''});
 let G=null; // 進行中のゲーム
 const esc=s=>String(s??'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
-function who(){$('who').textContent=ST.name?`${ST.kumi}組 ${ST.ban}番 ${ST.name}`:'';}
+function who(){$('who').textContent='🧑‍💼 あなたは社長';}
 function counts(id){const c=LS.get('bio_count',{});return c[id]||{play:0,over:0};}
 function bump(id,k){const c=LS.get('bio_count',{});c[id]=c[id]||{play:0,over:0};c[id][k]++;LS.set('bio_count',c);}
 let LAST=null;
@@ -926,6 +934,26 @@ function balanceHtml(S){const B=balance(S,G.s,G.c),hi=B.filter(x=>x[1]>=4).map(x
  <p>${hi.length?`「${hi.join('」「')}」が高く、`:''}${lo.length?`「${lo.join('」「')}」が低めでした。`:'大きなかたよりの少ない経営でした。'}</p>
  <p class="small">どれかを高めると、別のどれかが下がることがあります（トレードオフ）。例：人の手がかからない⇔仕事がへる／生産量がふえた⇔コスト・環境問題／効率よくできる⇔生き物の健康。どの立場を大切にするかで、「よい育て方」は変わります。（目安の評価です）</p></div>`;}
 
+
+/* ===== 主人公：社長（ノベルゲームと同じ人物） ===== */
+function shachoSVG(mood='normal'){const skin='#f3c9a5',ink='#1f2937';
+ const body=`<path d="M10 340 C10 252 62 214 120 214 C178 214 230 252 230 340 Z" fill="#1f2a44"/><polygon points="98,216 120,268 142,216" fill="#fff"/><polygon points="113,240 127,240 132,300 120,314 108,300" fill="#ea580c"/><path d="M98 216 L120 268 L84 232 Z M142 216 L120 268 L156 232 Z" fill="#111a30"/><circle cx="170" cy="266" r="9" fill="#facc15"/>`;
+ const hair=`<path d="M60 112 C56 52 100 38 126 40 C168 42 188 70 180 112 C168 82 124 70 98 80 C80 86 66 100 60 112 Z" fill="#9ca3af"/>`;
+ const B=(x1,y1,x2,y2)=>`<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${ink}" stroke-width="5" stroke-linecap="round"/>`;
+ const brows=mood==='angry'?B(80,98,110,108)+B(130,108,160,98):mood==='worried'?B(80,108,110,97)+B(130,97,160,108):mood==='happy'?B(82,100,110,98)+B(130,98,158,100):B(82,102,110,101)+B(130,101,158,102);
+ const eyes=mood==='happy'?`<path d="M86 124 q11 -14 22 0" stroke="${ink}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M132 124 q11 -14 22 0" stroke="${ink}" stroke-width="5" fill="none" stroke-linecap="round"/>`:`<ellipse cx="97" cy="124" rx="5.5" ry="${mood==='worried'?8:7}" fill="${ink}"/><ellipse cx="143" cy="124" rx="5.5" ry="${mood==='worried'?8:7}" fill="${ink}"/><circle cx="99" cy="121" r="1.8" fill="#fff"/><circle cx="145" cy="121" r="1.8" fill="#fff"/>`;
+ const mouth=mood==='happy'?`<path d="M100 152 Q120 178 140 152 Z" fill="#9f1239"/><path d="M108 160 Q120 168 132 160" fill="#fecdd3"/>`:mood==='angry'?`<path d="M104 156 L136 156 L130 170 L110 170 Z" fill="#7f1d1d"/>`:mood==='worried'?`<path d="M102 164 Q120 148 138 164" stroke="${ink}" stroke-width="5" fill="none" stroke-linecap="round"/>`:`<path d="M106 158 Q120 164 134 158" stroke="${ink}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+ let fx='';if(mood==='happy')fx=`<ellipse cx="82" cy="146" rx="11" ry="7" fill="#fb7185" opacity=".45"/><ellipse cx="158" cy="146" rx="11" ry="7" fill="#fb7185" opacity=".45"/>`;if(mood==='worried')fx=`<path d="M182 92 q10 18 0 26 q-10 -8 0 -26 Z" fill="#7dd3fc"/>`;if(mood==='angry')fx=`<path d="M178 70 l8 -10 M190 80 l12 -4 M180 58 l2 -12" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/>`;
+ return`<svg viewBox="0 0 240 340" aria-hidden="true">${body}<rect x="104" y="184" width="32" height="36" fill="${skin}"/><circle cx="58" cy="126" r="11" fill="${skin}"/><circle cx="182" cy="126" r="11" fill="${skin}"/><ellipse cx="120" cy="120" rx="62" ry="68" fill="${skin}"/>${hair}${brows}${eyes}${mouth}${fx}</svg>`;}
+function say(text,mood='normal'){return`<div class="shacho"><div class="sface">${shachoSVG(mood)}</div><div class="sbub"><span class="sname">社長（あなた）</span>${text}</div></div>`;}
+function turnTalk(S,s,t){const m=money(S,s),h=s.health??100;
+ if(m<0)return say('むむ…お金が足りん！ 借金には利息がかかる。むだな費用はないか、見直さねば…。','worried');
+ if(h<45)return say(`${S.id==='tomato'?'株':S.id==='madai'?'魚':'鶏'}の元気がない…。安さだけで決めては、命を預かる者として失格だ。原因を考えよう。`,'worried');
+ if(t===0)return say(`さあ、道の駅の新名物づくりだ！ 「安く・多く・早く」がわしの口ぐせだが…${S.id==='tomato'?'トマト':S.id==='madai'?'マダイ':'鶏'}の命を預かる以上、一つ一つ理由を考えて決めるぞ。`,'happy');
+ if(t===S.turns-1)return say('いよいよ最後のターンだ。ここまでの経験を生かして決めよう！','happy');
+ if(m>S.capital*1.3)return say('よしよし、もうけが出ているぞ！ だが油断は禁物だ。','happy');
+ return say(['次はどうする？ 費用と効果をよく比べて決めよう。','安く済ませるか、手間をかけるか…それが問題だ。','生き物の様子をよく観察するのが、いちばんの近道だな。'][t%3]);}
+
 /* ===== 称号・バッジ・図鑑 ===== */
 const RANKS=[[4,'💎','大富豪'],[2.5,'👑','ブランド経営者'],[1.6,'⭐','評判の生産者'],[1,'🧑‍🌾','一人前の生産者'],[-1e9,'🌱','見習い生産者']];
 const rankOf=r=>RANKS.find(x=>r>=x[0]);
@@ -975,14 +1003,12 @@ function zukan(){const Z=Object.values(LS.get('bio_zukan',{}));
 
 /* トップ */
 function home(){G=null;who();const q=LS.get('bio_queue',[]);
- app.innerHTML=`<div class="card hero"><div class="icons"><span>🍅</span><span>🐟</span><span>🐔</span></div><h2>生物育成シミュレーター</h2><p>作物の栽培・水産生物の栽培・動物の飼育を、<b>生産者になったつもりで</b>体験しよう！<br>あなたは生物の命を預かっています。一つ一つの判断を、理由を考えて行おう。<br><b style="color:#c0392b">管理のミスや命を粗末にする選択をすると、育成はそこで終わります。</b></p></div>
- ${homeExtras()}<div class="card"><h3>あなたの情報</h3><div class="grid"><label>組<select id="kumi">${opts(8,ST.kumi)}</select></label><label>番号<select id="ban">${opts(40,ST.ban)}</select></label><label>氏名<input type="text" id="nm" value="${esc(ST.name)}"></label></div></div>
+ app.innerHTML=`<div class="card hero"><div class="icons"><span>🍅</span><span>🐟</span><span>🐔</span></div><h2>生物育成シミュレーター</h2><p>あなたは<b>道の駅の社長</b>。新しい名物を育てて売り出そう！<br>作物の栽培・水産生物の栽培・動物の飼育から1つ選んで、経営してみよう。<br><b style="color:#c0392b">管理のミスや命を粗末にする選択をすると、育成はそこで終わります。</b></p>${say('わしが社長だ！ 「安く・多く・早く」がモットーだが…生き物の命を預かる以上、もうけだけでは決められん。いっしょに考えて経営するぞ！','happy').replace('class="shacho"','class="shacho big"')}</div>
+ ${homeExtras()}
  <div class="card"><h3>題材を選ぶ</h3><div class="grid">${Object.values(SIMS).map(S=>`<button class="opt simcard" data-sim="${S.id}"><span class="band" style="background:${S.color} url(${IP({tomato:'bg_tomato',madai:'bg_madai_sea',hen:'bg_hen_free'}[S.id])}) center/cover;opacity:.75"></span><span class="ico">${S.icon}</span><span class="cnt">挑戦 ${counts(S.id).play}回</span><span class="tag">${S.cat}</span><b>${S.name}</b><span class="small">${S.intro}</span><br><span class="small"><b>💰 元手：${yen(S.capital)}</b></span></button>`).join('')}</div></div>
  <div class="card"><h3>品種改良・遺伝子組換え・ゲノム編集のちがい</h3>${TECH_TABLE}</div>
- ${q.length?`<div class="card"><p>この端末に未送信の記録が${q.length}件あります。</p><button id="flush">まとめて提出する</button></div>`:''}
- ${gas()?'':'<p class="small">※ 提出先（スプレッドシート）が設定されていません。記録はこの端末に保存されます。</p>'}`;
- app.querySelectorAll('[data-sim]').forEach(b=>b.onclick=()=>{ST={kumi:$('kumi').value.trim(),ban:$('ban').value.trim(),name:$('nm').value.trim()};if(!ST.kumi||!ST.ban||!ST.name){alert('組・番号を選び、氏名を入力してください。');return;}LS.set('bio_student',ST);who();start(b.dataset.sim);});
- if($('flush'))$('flush').onclick=flush;if($('zk'))$('zk').onclick=zukan;window.scrollTo(0,0);}
+`;
+ app.querySelectorAll('[data-sim]').forEach(b=>b.onclick=()=>start(b.dataset.sim));if($('zk'))$('zk').onclick=zukan;window.scrollTo(0,0);}
 
 /* 計画 */
 function start(id){G={S:SIMS[id],c:{},si:0};setupStep();}
@@ -997,20 +1023,17 @@ function setupStep(){const S=G.S,st=S.setup[G.si];
 function choiceText(){return G.S.setup.map(st=>`${st.title}：${st.options.find(o=>o.id===G.c[st.key]).label}`);}
 function plan(){const S=G.S;
  app.innerHTML=`<div class="card"><div class="prog">${S.name} ／ 育成計画のまとめ</div><h2>育成計画</h2><div>${choiceText().map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div>
- <h3>育成の目標</h3><select id="goal"><option value="">選んでください</option><option>収量（生産量）を多くする</option><option>品質を高くする</option><option>利益を多くする</option><option>環境への負荷を小さくする</option><option>${S.id==='tomato'?'病害虫や災害に強い育て方をする':'生き物の健康や快適さを大切にする'}</option></select>
- <h3>この計画にした理由</h3><textarea id="why" placeholder="選んだ品種や方法と、目標とのつながりを書こう"></textarea><div class="count" id="whyc"></div>
+ ${say('よし、この計画でいこう！ 計画どおりにいくかどうか…ここからが本番だ。','happy')}
  <div class="row" style="margin-top:10px"><button class="sub" id="back">計画を見直す</button><button id="go" class="big">育成スタート！</button></div></div>`;
- const ok=counter($('why'),$('whyc'),20,150);
  $('back').onclick=()=>{G.si=S.setup.length-1;setupStep();};
- $('go').onclick=()=>{if(!$('goal').value||!ok()){alert('目標を選び、理由を20字以上で書いてください。');return;}
-  G.goal=$('goal').value;G.why=$('why').value.trim();const seed=(Date.now()^Math.floor(Math.random()*1e9))>>>0;G.rng=rngFrom(seed);G.s=S.init(G.c,G.rng);G.t=0;G.last=null;G.allLogs=[];bump(S.id,'play');turn();};window.scrollTo(0,0);}
+ $('go').onclick=()=>{G.goal='';G.why='';const seed=(Date.now()^Math.floor(Math.random()*1e9))>>>0;G.rng=rngFrom(seed);G.s=S.init(G.c,G.rng);G.t=0;G.last=null;G.allLogs=[];bump(S.id,'play');turn();};window.scrollTo(0,0);}
 
 /* ターン */
 function bars(S){return S.status(G.s,G.c).map(([lb,v,u,rg,txt])=>{if(txt)return`<div class="stat">${lb}<span class="v">${typeof v==='number'?v.toLocaleString():v}${u}</span></div>`;const val=clamp(Math.round(v),0,100);let col='#2f6b4f';if(rg){if(val<rg[0]||val>rg[1])col='#a8601c';}else if(val<40)col='#8f2a2a';else if(val<70)col='#a8601c';return`<div class="stat">${lb}<span class="v">${val}${u}</span><div class="bar"><i style="width:${val}%;background:${col}"></i></div></div>`;}).join('');}
 function logHtml(L){return L.map((x,i)=>`<div class="log ${x.type}" style="animation-delay:${i*.12}s">${esc(x.msg)}${x.memo?`<span class="memo">技術メモ：${esc(x.memo)}</span>`:''}</div>`).join('');}
 function turn(){const S=G.S,t=G.t;G.s.now=t;if(G.gAt!==t){G.gAt=t;if(gachaTurns(S).includes(t)&&t<S.turns){gachaScreen(S,t);return;}}if(G.evAt!==t){G.evAt=t;const ev=pickEvent(S,t);if(ev){eventScreen(S,t,ev);return;}}const D=S.decisions(G.s,t,G.c);
  app.innerHTML=`<div class="hud"><span>${S.icon} ${S.name}</span><span>${S.label(t)}</span><div class="turnbar"><i style="width:${Math.round(t/S.turns*100)}%"></i></div><span>${t+1} / ${S.turns}</span><span class="mchip ${money(S,G.s)<0?'neg':''}">💰 所持金 ${yen(money(S,G.s))}</span></div>
- ${modChips(G.s,t)}<div class="layout"><div class="card" style="border-top:6px solid ${S.color}"><div class="scene">${S.scene(G.s,t,G.c)}</div>${bars(S)}<div class="small">${choiceText().map(esc).join('<br>')}</div></div>
+ ${turnTalk(S,G.s,t)}${modChips(G.s,t)}<div class="layout"><div class="card" style="border-top:6px solid ${S.color}"><div class="scene">${S.scene(G.s,t,G.c)}</div>${bars(S)}<div class="small">${choiceText().map(esc).join('<br>')}</div></div>
  <div>${G.last?`<div class="card"><h3 style="margin-top:0">前のターンの結果</h3>${logHtml(G.last)||'<div class="log">大きな変化はありませんでした。</div>'}</div>`:''}
  <div class="card"><h3 style="margin-top:0">今の状況</h3>${S.info(G.s,t,G.c).map(x=>`<div class="info ${x.type==='n'?'':'w'}">${esc(x.msg)}</div>`).join('')}
  <h3>今回の管理を決める</h3>${D.map(dc=>`<div class="dec"><b>${dc.label}</b>${dc.options.map(([v,l])=>`<label><input type="${dc.type==='radio'?'radio':'checkbox'}" name="${dc.key}" value="${v}" ${dc.type==='radio'&&v===dc.def?'checked':''}>${l.split('｜')[0]}${l.split('｜')[1]?`<small class="hint">${l.split('｜')[1]}</small>`:''}</label>`).join('')}</div>`).join('')}
@@ -1032,12 +1055,8 @@ function turn(){const S=G.S,t=G.t;G.s.now=t;if(G.gAt!==t){G.gAt=t;if(gachaTurns(
 function gameOver(){const S=G.S,o=G.over,last=G.allLogs[G.allLogs.length-1];collect(S,o.title,o.explain);
  app.innerHTML=`<div class="go"><div class="prog" style="color:#bbb">${S.name} ／ ${S.label(G.t)}</div><h2>育成はここで終わりです</h2><div class="cause">${esc(o.title)}</div>${o.explain?`<p class="memo">技術メモ：${esc(o.explain)}</p>`:''}<p class="memo" style="text-align:center">失われた命を無駄にしないために、何が原因だったのかを考えよう。</p></div>
  ${last&&last.L.length?`<div class="card"><h3 style="margin-top:0">このターンに起きたこと</h3>${logHtml(last.L)}</div>`:''}
- <div class="card"><h3 style="margin-top:0">なぜこうなったのか、原因をまとめよう</h3><p class="small">自分のどの判断が、どのような結果につながったのかを30〜50字で書きます。書いて提出すると、もう一度挑戦できます。</p>
- <textarea id="gr"></textarea><div class="count" id="grc"></div><button id="gs">提出する</button><p id="gmsg" class="small"></p><div class="row" id="gnext" style="display:none"><button id="again">もう一度挑戦する</button><button class="sub" id="top">題材選択へ</button></div></div>`;
- const ok=counter($('gr'),$('grc'),30,50);
- $('gs').onclick=async()=>{if(!ok()){alert('30〜50字で書いてください。');return;}$('gs').disabled=true;$('gr').readOnly=true;
-  const cn=counts(S.id);const r=await send({kind:'ゲームオーバー',sim:S.name,play:cn.play,overCount:cn.over,setting:choiceText().join(' ／ '),goal:G.goal,why:G.why,turn:`${G.t+1}/${S.turns}（${S.label(G.t)}）`,summary:'',axes:[],overCause:o.title,overReflect:$('gr').value.trim()});
-  if(!$('gmsg'))return;$('gmsg').textContent=sendMsg(r);addResend('gmsg');$('gnext').style.display='flex';};
+ <div class="card">${say('わしの判断のどこがまずかったのか…。原因を考えて、もう一度挑戦だ！','worried')}<div class="row" style="justify-content:center;margin-top:10px"><button id="again" class="big">もう一度挑戦する</button><button class="sub" id="top">題材選択へ</button></div></div>`;
+ bump(S.id,'over');
  $('again').onclick=()=>start(S.id);$('top').onclick=home;window.scrollTo(0,0);}
 
 /* 結果 */
@@ -1054,17 +1073,8 @@ function result(){const S=G.S,R=S.result(G.s,G.c),total=R.axes.reduce((a,x)=>a+x
  ${balanceHtml(S)}${EX.html}<div class="card"><h3 style="margin-top:0">この題材で学べる技術</h3><ul>${R.points.map(p=>`<li>${p}</li>`).join('')}<li>よい管理には、資材や光熱費だけでなく人の作業時間（人件費）もかかります。効果と費用のバランス（トレードオフ）を考えて技術を選ぶことが大切です。</li></ul>
  <p class="small">すべての観点で★5を取るのは難しく、どれかを高めると別のどれかが下がることがあります。${low.length?`今回は「${low.join('」「')}」が低めでした。`:''}品種や方法を変えて、もう一度挑戦して比べてみましょう。</p>
  ${prev.length?`<h3>これまでの記録</h3><table><tr><th>日時</th><th>設定</th><th>合計</th></tr>${prev.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.setting)}</td><td>${x.total}</td></tr>`).join('')}</table>`:''}</div>
- <div class="card"><h3 style="margin-top:0">振り返り</h3>
- <div class="q"><b>1. 自分が工夫した管理と、その理由を書こう。</b><textarea id="q1"></textarea><div class="count" id="c1"></div></div>
- <div class="q"><b>2. 自分の育て方を、生産者・消費者・環境（または生き物）の立場から評価しよう。</b><textarea id="q2"></textarea><div class="count" id="c2"></div></div>
- <div class="q"><b>3. 選んだ品種（品種改良・ゲノム編集など）について、自分の考えを書こう。</b><textarea id="q3"></textarea><div class="count" id="c3"></div></div>
- <div class="q"><b>4. うまくいかなかったことや前回の結果をふまえて、次はどのように改善するか書こう。</b><textarea id="q4"></textarea><div class="count" id="c4"></div></div>
- <button id="sub">提出する</button><p id="smsg" class="small"></p><div class="row" id="snext" style="display:none"><button id="again">もう一度挑戦する</button><button class="sub" id="top">題材選択へ</button></div></div>`;
+ <div class="card">${total>=15?say('大成功だ！ 道の駅の名物として胸を張れるぞ。次は別の育て方でも試してみるか！','happy'):total>=10?say('まずまずだな。だが、まだ伸ばせるところがある。次はどこを変えてみようか。'):say('うーむ…思ったようにはいかなかった。品種や方法を変えて、もう一度やり直そう！','worried')}<div class="row" style="justify-content:center;margin-top:10px"><button id="again" class="big">もう一度挑戦する</button><button class="sub" id="top">題材選択へ</button></div></div>`;
  confetti();banner('育成完了！',`${S.name}`,S.color);
- const oks=[1,2,3,4].map(i=>counter($('q'+i),$('c'+i),30,300));
- $('sub').onclick=async()=>{if(!oks.every(f=>f())){alert('それぞれ30字以上（300字以内）で書いてください。');return;}$('sub').disabled=true;[1,2,3,4].forEach(i=>$('q'+i).readOnly=true);
-  const cn=counts(S.id);const r=await send({kind:'育成完了',sim:S.name,play:cn.play,overCount:cn.over,setting:choiceText().join(' ／ '),goal:G.goal,why:G.why,turn:`${S.turns}/${S.turns}`,summary:R.summary+`／元手 ${yen(S.capital)} → 最終所持金 ${yen(money(S,G.s))}`+((G.s.evLog||[]).length?`／イベント：${G.s.evLog.join('、')}`:'')+EX.summary,axes:R.axes.map(x=>`${x[0]} ★${x[1]}`),total,overCause:'',overReflect:'',q1:$('q1').value.trim(),q2:$('q2').value.trim(),q3:$('q3').value.trim(),q4:$('q4').value.trim()});
-  if(!$('smsg'))return;$('smsg').textContent=sendMsg(r);addResend('smsg');$('snext').style.display='flex';};
  $('again').onclick=()=>start(S.id);$('top').onclick=home;window.scrollTo(0,0);}
 
 home();
