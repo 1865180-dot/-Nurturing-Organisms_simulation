@@ -231,6 +231,16 @@ td.yen{text-align:right;white-space:nowrap}tr.sum td{font-weight:800;border-top:
 .shipc{width:150px;padding:14px 8px;border:4px solid #e5e7eb;border-radius:18px;background:#fff;transition:transform .08s}
 .shipc .si{font-size:3rem;line-height:1.2}
 .shipc.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,#fff);transform:scale(1.12);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+
+.order{background:#fffbeb;border:3px dashed #f59e0b;border-radius:16px;padding:10px 14px;margin:8px 0;text-align:left;line-height:1.6}
+.order .oh{font-weight:800;color:#b45309}
+.order.new{animation:opop .6s ease}
+.order.okd{background:#f0fdf4;border-color:#16a34a}.order.okd .oh{color:#15803d}
+.order.ng{background:#f8fafc;border-color:#94a3b8}.order.ng .oh{color:#475569}
+@keyframes opop{0%{transform:scale(.9);opacity:0}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
+.prbtn{width:190px;background:#fff;color:#1f2937;border:4px solid #e5e7eb;box-shadow:0 4px 0 #d1d5db;padding:10px 8px;font-weight:700}
+.prbtn.sel{border-color:#c2410c;background:#ffedd5}
+.prbtn .si{font-size:2rem}
 </style>
 </head>
 <body>
@@ -964,21 +974,49 @@ function turnTalk(S,s,t){const m=money(S,s),h=s.health??100;
 const SHIP=[{k:'nokori',ic:'😢',name:'売れ残り',mul:.5,col:'#64748b',msg:'うーむ…お客さんが来ん。半分も売れ残ってしまった…。',memo:'同じ時期にほかの産地からもたくさん出荷されると、売れ残ることがあります。売り方（宣伝・販路）も大切な技術です。',mood:'worried'},
  {k:'kanbai',ic:'😊',name:'完売',mul:1,col:'#16a34a',msg:'よし、全部売り切れたぞ！ 予定どおりの売り上げだ。',memo:'品質が安定していると、お客さんに安心して買ってもらえます。',mood:'happy'},
  {k:'bakuure',ic:'🤩',name:'爆売れ',mul:2.2,col:'#ea580c',msg:'な、なんと！ 行列ができて大評判だ！ 追加注文まで来たぞ！',memo:'評判が広がると、高い値段でもたくさん売れます。生き物を大切に育てた品質の高さが、ブランドにつながります。',mood:'happy'}];
-function shipOdds(s){const h=s.health??100;let a=30,c=20;if(h>=85){a=15;c=35;}else if(h<55){a=45;c=10;}return[a,100-a-c,c];}
-function shipDay(){const S=G.S,s=G.s,before=s.sales||0;
+
+/* ===== お客さんからの注文（ミッション） ===== */
+const ORDERS={
+ tomato:[{who:'🍝 イタリアンレストラン',want:'あまいトマト（平均糖度9度以上）',ok:s=>s.sugarKg&&s.sugarSum/s.sugarKg>=9,now:s=>s.sugarKg?`平均糖度 ${r1(s.sugarSum/s.sugarKg)}度`:'まだ収穫前',hint:'水を控えめにすると糖度が上がる。品種選びも大切。'},
+  {who:'🏫 学校給食センター',want:'たくさんのトマト（収穫量165kg以上）',ok:s=>s.harvest>=165,now:s=>`収穫量 ${r1(s.harvest)}kg`,hint:'わき芽かき・誘引・病害虫の見回りで株を元気に保とう。'},
+  {who:'🌿 自然食品のお店',want:'農薬をできるだけ使わないトマト（防除1回以下・株の元気70%以上）',ok:s=>s.pestN<=1&&s.health>=70,now:s=>`防除 ${s.pestN}回・株の元気 ${Math.round(s.health)}%`,hint:'病害虫を寄せつけない管理（見回り・風通し）がカギ。'}],
+ madai:[{who:'🍣 高級料亭',want:'大きなマダイ（平均体重1kg以上）',ok:s=>s.W>=1000,now:s=>`平均体重 ${Math.round(s.W)}g`,hint:'水温に合わせて、えさの量を調整しよう。'},
+  {who:'🛒 大手スーパー',want:'たくさんのマダイ（出荷量2,000kg以上）',ok:s=>s.n*s.W/1000>=2000,now:s=>`今の重さ合計 ${Math.round(s.n*s.W/1000).toLocaleString()}kg`,hint:'数を減らさず、しっかり大きく育てよう。'},
+  {who:'🐟 魚屋さん',want:'元気なマダイ（生存率90%以上）',ok:s=>s.n/s.n0>=.9,now:s=>`生存率 ${r1(s.n/s.n0*100)}%`,hint:'見回りと水質管理で、病気を防ごう。'}],
+ hen:[{who:'🎂 ケーキ屋さん',want:'たくさんの卵（1羽あたり290個以上）',ok:s=>s.sold/(s.h0||1000)>=290,now:s=>`1羽あたり ${Math.round(s.sold/(s.h0||1000))}個`,hint:'暑さ対策と栄養で、産卵率を保とう。'},
+  {who:'🍳 卵かけごはん専門店',want:'健康な鶏の卵（鶏の健康80%以上）',ok:s=>s.health>=80,now:s=>`鶏の健康 ${Math.round(s.health)}%`,hint:'鶏舎のそうじ・暑さ対策でストレスを減らそう。'},
+  {who:'🏨 ホテルの朝食',want:'安定した生産（鶏の生存率95%以上）',ok:s=>s.hens/(s.h0||1000)>=.95,now:s=>`生存率 ${r1(s.hens/(s.h0||1000)*100)}%`,hint:'ワクチンや野鳥対策で、病気を防ごう。'}]};
+function pickOrder(id){const L=ORDERS[id];return Math.floor(Math.random()*L.length);}
+function getOrder(S){return G.order==null?null:ORDERS[S.id][G.order];}
+function orderCard(S,s,t){const O=getOrder(S);if(!O)return'';let ok=false;try{ok=!!O.ok(s);}catch(e){}
+ return`<div class="order ${t===0?'new':''}"><div class="oh">📋 ${t===0?'注文が届いた！':'お客さんからの注文'}　<b>${O.who}</b></div><div>「${O.want}」がほしい！ → 出荷の日に達成していれば<b>特別ボーナス＋爆売れしやすくなる</b></div><div class="small">今：${O.now(s)} ${ok?'<b style="color:#16a34a">✅ 達成中</b>':'<span style="color:#b45309">⏳ まだ</span>'}　💡${O.hint}</div></div>`;}
+/* 出荷の日：注文の判定 → 値段を決める → 売れ行き3段階 */
+const PRICE=[{k:'high',ic:'💎',name:'高めに売る',mul:1.4,da:35,dc:-10,d:'1つあたりの値段×1.4。でも売れ残りやすい'},
+ {k:'mid',ic:'⚖️',name:'ふつうの値段',mul:1,da:0,dc:0,d:'いつもどおりの値段'},
+ {k:'low',ic:'🏷️',name:'安くして売る',mul:.75,da:-20,dc:20,d:'1つあたりの値段×0.75。でも爆売れしやすい'}];
+function shipOdds(s,pr,od){const h=s.health??100;let a=30,c=20;if(h>=85){a=15;c=35;}else if(h<55){a=45;c=10;}
+ a+=pr.da;c+=pr.dc;if(od===true){a-=10;c+=10;}else if(od===false){a+=10;}
+ a=clamp(a,5,70);c=clamp(c,5,60);if(a+c>90)c=90-a;return[a,100-a-c,c];}
+function shipDay(){const S=G.S,s=G.s,before=s.sales||0,O=getOrder(S);let od=null,bonus=0;
+ if(O){try{od=!!O.ok(s);}catch(e){od=false;}if(od){bonus=Math.round(before*.15/1000)*1000;s.extra=(s.extra||0)+bonus;s.orderOK=true;}}
+ const word=S.id==='tomato'?'トマト':S.id==='madai'?'マダイ':'卵';
  app.innerHTML=`<div class="card" style="border-top:6px solid ${S.color};text-align:center"><div class="prog">${S.name} ／ 出荷の日</div><h2>🚚 いよいよ道の駅で販売だ！</h2>
- ${say('育ててきた'+(S.id==='tomato'?'トマト':S.id==='madai'?'マダイ':'卵')+'を、いよいよお客さんに届けるぞ。売れ行きはどうなるか…どきどきするな！')}
- <p>これまでの売り上げ予定：<b>${yen(before)}</b><br><span class="small">売れ行きしだいで、売り上げが大きく変わります。</span></p>
- <div class="shipgrid">${SHIP.map((x,i)=>`<div class="shipc" id="sp${i}" style="--c:${x.col}"><div class="si">${x.ic}</div><b>${x.name}</b><div class="small">売り上げ ×${x.mul}</div></div>`).join('')}</div>
- <div id="shipres"></div><button id="shipgo" class="big">📦 出荷する！</button></div>`;
- $('shipgo').onclick=async()=>{$('shipgo').disabled=true;$('shipgo').style.display='none';
-  const o=shipOdds(s),r=Math.random()*100,pick=r<o[0]?0:r<o[0]+o[1]?1:2;
-  let i=0;const n=15+pick+3*Math.floor(Math.random()*2);
-  for(let k=0;k<=n;k++){i=k%3;document.querySelectorAll('.shipc').forEach((e,j)=>e.classList.toggle('on',j===i));sfx('me');await sleep(70+k*k*1.6);}
-  i=pick;document.querySelectorAll('.shipc').forEach((e,j)=>e.classList.toggle('on',j===i));
-  const X=SHIP[pick];s.sales=before*X.mul;s.ship=X.k;
-  banner(X.ic+' '+X.name+'！',`売り上げ ×${X.mul}`,X.col);sfx(pick===0?'bad':pick===2?'end':'good');if(pick===2)confetti();
-  $('shipres').innerHTML=`${say(X.msg,X.mood)}<div class="moneybox" style="margin:8px auto">売り上げ ${yen(before)} → <b style="color:${X.col};font-size:1.3em">${yen(s.sales)}</b></div><div class="memo" style="text-align:left">📝 ${X.memo}</div><button id="shipnext" class="big" style="margin-top:10px">🏆 結果発表へ</button>`;
+ ${O?`<div class="order ${od?'okd':'ng'}"><div class="oh">📋 ${O.who}からの注文「${O.want}」</div>${od?`<b>🎉 注文達成！</b> 特別価格で買い取ってもらえた（ボーナス <b>${yen(bonus)}</b>）。評判が広がって、爆売れしやすくなった！`:`<b>😣 注文は達成できなかった…</b>（${O.now(s)}）。信用が下がって、売れ残りやすくなった。`}</div>`:''}
+ ${say(od?'注文もばっちりだ！ さて、値段をいくらにするか…。ここは社長の腕の見せどころだな。':'さあ、値段を決めよう。「安く・多く・早く」でいくか、高く売って勝負するか…。',od?'happy':'normal')}
+ <p>これまでの売り上げ予定：<b>${yen(before)}</b></p>
+ <h3>① 値段を決める</h3><div class="shipgrid">${PRICE.map((x,i)=>`<button class="prbtn" data-pr="${i}"><div class="si">${x.ic}</div><b>${x.name}</b><div class="small">${x.d}</div></button>`).join('')}</div>
+ <h3>② 売れ行きは…？</h3><div class="shipgrid">${SHIP.map((x,i)=>`<div class="shipc" id="sp${i}" style="--c:${x.col}"><div class="si">${x.ic}</div><b>${x.name}</b><div class="small">×${x.mul}</div></div>`).join('')}</div>
+ <div id="shipres"></div><button id="shipgo" class="big" disabled>値段を選んでね</button></div>`;
+ let pr=null;
+ document.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{if($('shipgo').style.display==='none')return;pr=PRICE[+b.dataset.pr];document.querySelectorAll('[data-pr]').forEach(x=>x.classList.toggle('sel',x===b));sfx('me');$('shipgo').disabled=false;$('shipgo').textContent=`📦 「${pr.name}」で出荷する！`;});
+ $('shipgo').onclick=async()=>{if(!pr)return;$('shipgo').style.display='none';document.querySelectorAll('[data-pr]').forEach(x=>x.disabled=true);
+  const o=shipOdds(s,pr,od),r=Math.random()*100,pick=r<o[0]?0:r<o[0]+o[1]?1:2;
+  const n=15+pick+3*Math.floor(Math.random()*2);
+  for(let k=0;k<=n;k++){document.querySelectorAll('.shipc').forEach((e,j)=>e.classList.toggle('on',j===k%3));sfx('me');await sleep(70+k*k*1.6);}
+  const X=SHIP[pick],mul=pr.mul*X.mul;s.sales=before*mul;s.ship=X.k;s.price=pr.k;
+  banner(X.ic+' '+X.name+'！',`値段×${pr.mul} × 売れ行き×${X.mul}`,X.col);sfx(pick===0?'bad':pick===2?'end':'good');if(pick===2)confetti();
+  const lesson=pr.k==='high'?(pick===0?'値段を高くすると、買う人が減って売れ残りやすくなる。':'高い値段でも売れたのは、品質や評判が認められたから。'):pr.k==='low'?(pick===2?'安くすると多くの人が買ってくれる。でも1つあたりのもうけは小さい。':'安くしても売れ残ることがある。値段だけでなく、品質や宣伝も大切。'):'値段と売れ行きのバランスを考えるのが経営のポイント。';
+  $('shipres').innerHTML=`${say(X.msg,X.mood)}<div class="moneybox" style="margin:8px auto">売り上げ ${yen(before)} × ${r1(mul)} → <b style="color:${X.col};font-size:1.3em">${yen(s.sales)}</b>${bonus?`<br><span class="small">＋ 注文ボーナス ${yen(bonus)}</span>`:''}</div><div class="memo" style="text-align:left">📝 ${X.memo}<br>💹 ${lesson}</div><button id="shipnext" class="big" style="margin-top:10px">🏆 結果発表へ</button>`;
   $('shipnext').onclick=result;};
  window.scrollTo(0,0);}
 
@@ -1054,14 +1092,14 @@ function plan(){const S=G.S;
  ${say('よし、この計画でいこう！ 計画どおりにいくかどうか…ここからが本番だ。','happy')}
  <div class="row" style="margin-top:10px"><button class="sub" id="back">計画を見直す</button><button id="go" class="big">育成スタート！</button></div></div>`;
  $('back').onclick=()=>{G.si=S.setup.length-1;setupStep();};
- $('go').onclick=()=>{G.goal='';G.why='';const seed=(Date.now()^Math.floor(Math.random()*1e9))>>>0;G.rng=rngFrom(seed);G.s=S.init(G.c,G.rng);G.t=0;G.last=null;G.allLogs=[];bump(S.id,'play');turn();};window.scrollTo(0,0);}
+ $('go').onclick=()=>{G.goal='';G.why='';G.order=pickOrder(S.id);const seed=(Date.now()^Math.floor(Math.random()*1e9))>>>0;G.rng=rngFrom(seed);G.s=S.init(G.c,G.rng);G.t=0;G.last=null;G.allLogs=[];bump(S.id,'play');turn();};window.scrollTo(0,0);}
 
 /* ターン */
 function bars(S){return S.status(G.s,G.c).map(([lb,v,u,rg,txt])=>{if(txt)return`<div class="stat">${lb}<span class="v">${typeof v==='number'?v.toLocaleString():v}${u}</span></div>`;const val=clamp(Math.round(v),0,100);let col='#2f6b4f';if(rg){if(val<rg[0]||val>rg[1])col='#a8601c';}else if(val<40)col='#8f2a2a';else if(val<70)col='#a8601c';return`<div class="stat">${lb}<span class="v">${val}${u}</span><div class="bar"><i style="width:${val}%;background:${col}"></i></div></div>`;}).join('');}
 function logHtml(L){return L.map((x,i)=>`<div class="log ${x.type}" style="animation-delay:${i*.12}s">${esc(x.msg)}${x.memo?`<span class="memo">技術メモ：${esc(x.memo)}</span>`:''}</div>`).join('');}
 function turn(){const S=G.S,t=G.t;G.s.now=t;if(G.gAt!==t){G.gAt=t;if(gachaTurns(S).includes(t)&&t<S.turns){gachaScreen(S,t);return;}}if(G.evAt!==t){G.evAt=t;const ev=pickEvent(S,t);if(ev){eventScreen(S,t,ev);return;}}const D=S.decisions(G.s,t,G.c);
  app.innerHTML=`<div class="hud"><span>${S.icon} ${S.name}</span><span>${S.label(t)}</span><div class="turnbar"><i style="width:${Math.round(t/S.turns*100)}%"></i></div><span>${t+1} / ${S.turns}</span><span class="mchip ${money(S,G.s)<0?'neg':''}">💰 所持金 ${yen(money(S,G.s))}</span></div>
- ${turnTalk(S,G.s,t)}${modChips(G.s,t)}<div class="layout"><div class="card" style="border-top:6px solid ${S.color}"><div class="scene">${S.scene(G.s,t,G.c)}</div>${bars(S)}<div class="small">${choiceText().map(esc).join('<br>')}</div></div>
+ ${turnTalk(S,G.s,t)}${orderCard(S,G.s,t)}${modChips(G.s,t)}<div class="layout"><div class="card" style="border-top:6px solid ${S.color}"><div class="scene">${S.scene(G.s,t,G.c)}</div>${bars(S)}<div class="small">${choiceText().map(esc).join('<br>')}</div></div>
  <div>${G.last?`<div class="card"><h3 style="margin-top:0">前のターンの結果</h3>${logHtml(G.last)||'<div class="log">大きな変化はありませんでした。</div>'}</div>`:''}
  <div class="card"><h3 style="margin-top:0">今の状況</h3>${S.info(G.s,t,G.c).map(x=>`<div class="info ${x.type==='n'?'':'w'}">${esc(x.msg)}</div>`).join('')}
  <h3>今回の管理を決める</h3>${D.map(dc=>`<div class="dec"><b>${dc.label}</b>${dc.options.map(([v,l])=>`<label><input type="${dc.type==='radio'?'radio':'checkbox'}" name="${dc.key}" value="${v}" ${dc.type==='radio'&&v===dc.def?'checked':''}>${l.split('｜')[0]}${l.split('｜')[1]?`<small class="hint">${l.split('｜')[1]}</small>`:''}</label>`).join('')}</div>`).join('')}
