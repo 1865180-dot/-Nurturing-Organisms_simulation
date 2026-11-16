@@ -226,6 +226,11 @@ td.yen{text-align:right;white-space:nowrap}tr.sum td{font-weight:800;border-top:
 .shacho .sbub:before{content:"";position:absolute;left:-12px;bottom:18px;border:9px solid transparent;border-right-color:#c2410c}
 .shacho .sname{display:block;font-size:.75rem;color:#c2410c;letter-spacing:.05em}
 .shacho.big .sface{width:120px}
+
+.shipgrid{display:flex;gap:12px;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.shipc{width:150px;padding:14px 8px;border:4px solid #e5e7eb;border-radius:18px;background:#fff;transition:transform .08s}
+.shipc .si{font-size:3rem;line-height:1.2}
+.shipc.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,#fff);transform:scale(1.12);box-shadow:0 6px 18px rgba(0,0,0,.18)}
 </style>
 </head>
 <body>
@@ -744,7 +749,7 @@ function outcome(S,t,dl,r,deltas,m0){
  const fin=()=>{if(!$('rt'))return;const m=msgs[i];full=true;$('rt').textContent=m.msg;$('rm').textContent=m.memo?'技術メモ：'+m.memo:'';$('ar').style.visibility='visible';if(i===msgs.length-1)ready();};
  const ready=()=>{if(readied)return;readied=true;if($('ar'))$('ar').style.visibility='hidden';$('skip').style.display='none';const nx=$('nx');nx.style.display='';
   if(r.over){nx.textContent='▶ 結果を受け止める';nx.style.background='#444';nx.style.boxShadow='0 5px 0 #222';nx.onclick=()=>{const b=document.createElement('div');b.className='blackout';document.body.appendChild(b);setTimeout(()=>{b.remove();G.over=r.over;bump(S.id,'over');gameOver();},1300);};}
-  else{G.last=r.L;G.t++;const end=G.t>=S.turns;nx.textContent=end?'🏆 結果発表へ':'次のターンへ ▶';nx.onclick=()=>end?(sfx('end'),result()):turn();}};
+  else{G.last=r.L;G.t++;const end=G.t>=S.turns;nx.textContent=end?'🏆 結果発表へ':'次のターンへ ▶';nx.onclick=()=>end?(sfx('end'),shipDay()):turn();}};
  const adv=()=>{if(!full){clearInterval(timer);fin();return;}if(i<msgs.length-1){i++;show();}};
  $('rpg').onclick=adv;$('rpg').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();adv();}};
  $('skip').onclick=()=>{clearInterval(timer);$('rpg').outerHTML=`<div class="card" style="text-align:left;margin-top:14px">${logHtml(msgs)}</div>`;i=msgs.length-1;ready();};
@@ -953,6 +958,29 @@ function turnTalk(S,s,t){const m=money(S,s),h=s.health??100;
  if(t===S.turns-1)return say('いよいよ最後のターンだ。ここまでの経験を生かして決めよう！','happy');
  if(m>S.capital*1.3)return say('よしよし、もうけが出ているぞ！ だが油断は禁物だ。','happy');
  return say(['次はどうする？ 費用と効果をよく比べて決めよう。','安く済ませるか、手間をかけるか…それが問題だ。','生き物の様子をよく観察するのが、いちばんの近道だな。'][t%3]);}
+
+
+/* ===== 出荷の日：売れ行き3段階 ===== */
+const SHIP=[{k:'nokori',ic:'😢',name:'売れ残り',mul:.5,col:'#64748b',msg:'うーむ…お客さんが来ん。半分も売れ残ってしまった…。',memo:'同じ時期にほかの産地からもたくさん出荷されると、売れ残ることがあります。売り方（宣伝・販路）も大切な技術です。',mood:'worried'},
+ {k:'kanbai',ic:'😊',name:'完売',mul:1,col:'#16a34a',msg:'よし、全部売り切れたぞ！ 予定どおりの売り上げだ。',memo:'品質が安定していると、お客さんに安心して買ってもらえます。',mood:'happy'},
+ {k:'bakuure',ic:'🤩',name:'爆売れ',mul:2.2,col:'#ea580c',msg:'な、なんと！ 行列ができて大評判だ！ 追加注文まで来たぞ！',memo:'評判が広がると、高い値段でもたくさん売れます。生き物を大切に育てた品質の高さが、ブランドにつながります。',mood:'happy'}];
+function shipOdds(s){const h=s.health??100;let a=30,c=20;if(h>=85){a=15;c=35;}else if(h<55){a=45;c=10;}return[a,100-a-c,c];}
+function shipDay(){const S=G.S,s=G.s,before=s.sales||0;
+ app.innerHTML=`<div class="card" style="border-top:6px solid ${S.color};text-align:center"><div class="prog">${S.name} ／ 出荷の日</div><h2>🚚 いよいよ道の駅で販売だ！</h2>
+ ${say('育ててきた'+(S.id==='tomato'?'トマト':S.id==='madai'?'マダイ':'卵')+'を、いよいよお客さんに届けるぞ。売れ行きはどうなるか…どきどきするな！')}
+ <p>これまでの売り上げ予定：<b>${yen(before)}</b><br><span class="small">売れ行きしだいで、売り上げが大きく変わります。</span></p>
+ <div class="shipgrid">${SHIP.map((x,i)=>`<div class="shipc" id="sp${i}" style="--c:${x.col}"><div class="si">${x.ic}</div><b>${x.name}</b><div class="small">売り上げ ×${x.mul}</div></div>`).join('')}</div>
+ <div id="shipres"></div><button id="shipgo" class="big">📦 出荷する！</button></div>`;
+ $('shipgo').onclick=async()=>{$('shipgo').disabled=true;$('shipgo').style.display='none';
+  const o=shipOdds(s),r=Math.random()*100,pick=r<o[0]?0:r<o[0]+o[1]?1:2;
+  let i=0;const n=15+pick+3*Math.floor(Math.random()*2);
+  for(let k=0;k<=n;k++){i=k%3;document.querySelectorAll('.shipc').forEach((e,j)=>e.classList.toggle('on',j===i));sfx('me');await sleep(70+k*k*1.6);}
+  i=pick;document.querySelectorAll('.shipc').forEach((e,j)=>e.classList.toggle('on',j===i));
+  const X=SHIP[pick];s.sales=before*X.mul;s.ship=X.k;
+  banner(X.ic+' '+X.name+'！',`売り上げ ×${X.mul}`,X.col);sfx(pick===0?'bad':pick===2?'end':'good');if(pick===2)confetti();
+  $('shipres').innerHTML=`${say(X.msg,X.mood)}<div class="moneybox" style="margin:8px auto">売り上げ ${yen(before)} → <b style="color:${X.col};font-size:1.3em">${yen(s.sales)}</b></div><div class="memo" style="text-align:left">📝 ${X.memo}</div><button id="shipnext" class="big" style="margin-top:10px">🏆 結果発表へ</button>`;
+  $('shipnext').onclick=result;};
+ window.scrollTo(0,0);}
 
 /* ===== 称号・バッジ・図鑑 ===== */
 const RANKS=[[4,'💎','大富豪'],[2.5,'👑','ブランド経営者'],[1.6,'⭐','評判の生産者'],[1,'🧑‍🌾','一人前の生産者'],[-1e9,'🌱','見習い生産者']];
