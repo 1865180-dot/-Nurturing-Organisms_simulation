@@ -378,13 +378,13 @@ const TOMATO={
    if(jump>35&&c.breed==='kotoudo'){kg*=.75;add('warn','土の水分が急に増え、実が割れてしまいました（裂果）。','実の中に急に水が入ると、皮が追いつかずに割れます。高糖度品種は特に割れやすいです。');}
    else if(jump>45){kg*=.9;add('warn','実が割れたものがあります（裂果）。','水分の急な変化を少なくすると防げます。');}
    let sg={tasyu:8,kotoudo:10,teikou:8,gaba:8.5}[c.breed]+{none:.8,low:.6,mid:0,high:-.7}[d.water]+{sunny:.3,heat:.2,rain:-.3,longrain:-.6,typhoon:-.4}[w]+(s.health<50?-.5:0);
-   s.harvest+=kg;s.sugarSum+=sg*kg;s.sugarKg+=kg;s.sales+=kg*Math.max(600,1100+(sg-8)*200)*(c.breed==='gaba'?1.2:1)*M(s,'price');payCosts(s,[['収穫・出荷作業',0,r1(kg*.08)]],true);
+   s.harvest+=kg;s.sugarSum+=sg*kg;s.sugarKg+=kg;s.sales+=kg*Math.max(1100,2000+(sg-8)*350)*(c.breed==='gaba'?1.2:1)*M(s,'price');payCosts(s,[['収穫・出荷作業',0,r1(kg*.08)]],true);
    add('good',`${r1(kg)}kgを収穫しました（糖度 約${r1(sg)}度）。`,'');}
   s.hist.push(r1(s.harvest));
   return{L,over:null};},
  result(s,c){
   const kg=s.harvest,sugar=s.sugarKg?s.sugarSum/s.sugarKg:0;
-  const price=Math.max(600,1100+(sugar-8)*200)*(c.breed==='gaba'?1.2:1);
+  const price=Math.max(1100,2000+(sugar-8)*350)*(c.breed==='gaba'?1.2:1);
   const sales=s.sales,profit=sales+(s.extra||0)-s.cost;
   let e=5-Math.max(0,s.fertN-4)*.5-Math.max(0,s.pestN-1)*.7-s.leach*.5+(c.soil==='taihi'?.5:c.soil==='kagaku'?-.5:0);
   return{summary:`収穫量 ${r1(kg)}kg（1株あたり約${Math.round(kg*10)}g）、平均糖度 ${r1(sugar)}度、売上 ${yen(sales)}、費用 ${yen(s.cost)}、利益 ${yen(profit)}`,
@@ -485,13 +485,13 @@ const MADAI={
   if(s.n<s.n0*.7)return over('多くの魚が死んでしまいました（生存率70%未満）。',(([...L].reverse().find(x=>x.type==='bad')||{}).memo)||'病気や水質の悪化が重なりました。');
   if(s.health<=0)return over('魚の健康が保てず、大量に死んでしまいました。',(([...L].reverse().find(x=>x.type==='bad'||x.type==='warn')||{}).memo)||'');
   if(fT===0&&d.feed!=='stop')add('','水温が低く、魚はほとんど成長しませんでした。','');
-  if(t===this.turns-1){const kg=s.n*s.W/1000,pr=(s.W>=1000?1200:s.W>=800?1000:650)*(c.seed==='genome'?1.15:1)*M(s,'price');s.sales=kg*pr;payCosts(s,[['出荷作業',0,20]],true);
+  if(t===this.turns-1){const kg=s.n*s.W/1000,pr=(s.W>=1000?1500:s.W>=800?1250:800)*(c.seed==='genome'?1.15:1)*M(s,'price');s.sales=kg*pr;payCosts(s,[['出荷作業',0,20]],true);
    add('good',`${s.n.toLocaleString()}尾（${r1(kg)}kg）を出荷し、${yen(s.sales)}の売上になりました。`,s.W>=1000?'出荷サイズの1kgに届いたので、よい値段で売れました。養殖では、出荷までの長い期間、えさ代や人件費を先に払い続けます。':'1kgに届かなかったため、値段が安くなりました。養殖では、出荷までの長い期間、えさ代や人件費を先に払い続けます。');}
   s.hist.push(Math.round(s.W));
   return{L,over:null};},
  result(s,c){
   const kg=s.n*s.W/1000,sv=s.n/s.n0;
-  const p=(s.W>=1000?1200:s.W>=800?1000:650)*(c.seed==='genome'?1.15:1);
+  const p=(s.W>=1000?1500:s.W>=800?1250:800)*(c.seed==='genome'?1.15:1);
   const sales=s.sales||kg*p,profit=sales+(s.extra||0)-s.cost;
   let env=step5(-s.foul/s.n0*1000,[-60,-80,-105,-135])+(c.seed==='wild'?-1:0)+(c.method==='land'?.5:0);
   let hw=step5(sv,[.95,.9,.85,.78])-(c.density==='high'?1:0)-(c.vaccine==='no'?.5:0);
@@ -595,7 +595,7 @@ const HEN={
   if(broken>.05)add('warn',`殻がうすく、約${Math.round(broken*100)}%の卵が割れて出荷できませんでした。`,'年をとった鶏や暑さ、栄養不足で殻がうすくなります。カルシウムを強化した飼料で改善できます。');
   const eggs=s.hens*rate*28*M(s,'yield'),sold=eggs*(1-broken);
   s.eggs+=eggs;s.sold+=sold;
-  s.sales+=sold*{cage:20,enriched:25,barn:30,free:36}[h]*(c.breed==='cochin'?1.3:1)*M(s,'price');
+  s.sales+=sold*{cage:25,enriched:31,barn:38,free:45}[h]*(c.breed==='cochin'?1.3:1)*M(s,'price');
   add('good',`産卵率 ${Math.round(rate*100)}%：約${Math.round(eggs).toLocaleString()}個の卵を生産しました。`,'');
   s.health=clamp(s.health+3,-50,100);
   if(s.hens<(s.h0||1000)*.75)return over('多くの鶏が死んでしまいました（生存率75%未満）。',(([...L].reverse().find(x=>x.type==='bad')||{}).memo)||'');
@@ -971,7 +971,7 @@ function turnTalk(S,s,t){const m=money(S,s),h=s.health??100;
 
 
 /* ===== 出荷の日：売れ行き3段階 ===== */
-const SHIP=[{k:'nokori',ic:'😢',name:'売れ残り',mul:.5,col:'#64748b',msg:'うーむ…お客さんが来ん。半分も売れ残ってしまった…。',memo:'同じ時期にほかの産地からもたくさん出荷されると、売れ残ることがあります。売り方（宣伝・販路）も大切な技術です。',mood:'worried'},
+const SHIP=[{k:'nokori',ic:'😢',name:'売れ残り',mul:.7,col:'#64748b',msg:'うーむ…お客さんが来ん。だいぶ売れ残ってしまった…。',memo:'同じ時期にほかの産地からもたくさん出荷されると、売れ残ることがあります。売り方（宣伝・販路）も大切な技術です。',mood:'worried'},
  {k:'kanbai',ic:'😊',name:'完売',mul:1,col:'#16a34a',msg:'よし、全部売り切れたぞ！ 予定どおりの売り上げだ。',memo:'品質が安定していると、お客さんに安心して買ってもらえます。',mood:'happy'},
  {k:'bakuure',ic:'🤩',name:'爆売れ',mul:2.2,col:'#ea580c',msg:'な、なんと！ 行列ができて大評判だ！ 追加注文まで来たぞ！',memo:'評判が広がると、高い値段でもたくさん売れます。生き物を大切に育てた品質の高さが、ブランドにつながります。',mood:'happy'}];
 
@@ -991,10 +991,10 @@ function getOrder(S){return G.order==null?null:ORDERS[S.id][G.order];}
 function orderCard(S,s,t){const O=getOrder(S);if(!O)return'';let ok=false;try{ok=!!O.ok(s);}catch(e){}
  return`<div class="order ${t===0?'new':''}"><div class="oh">📋 ${t===0?'注文が届いた！':'お客さんからの注文'}　<b>${O.who}</b></div><div>「${O.want}」がほしい！ → 出荷の日に達成していれば<b>特別ボーナス＋爆売れしやすくなる</b></div><div class="small">今：${O.now(s)} ${ok?'<b style="color:#16a34a">✅ 達成中</b>':'<span style="color:#b45309">⏳ まだ</span>'}　💡${O.hint}</div></div>`;}
 /* 出荷の日：注文の判定 → 値段を決める → 売れ行き3段階 */
-const PRICE=[{k:'high',ic:'💎',name:'高めに売る',mul:1.4,da:35,dc:-10,d:'1つあたりの値段×1.4。でも売れ残りやすい'},
+const PRICE=[{k:'high',ic:'💎',name:'高めに売る',mul:1.4,da:25,dc:-5,d:'1つあたりの値段×1.4。でも売れ残りやすい'},
  {k:'mid',ic:'⚖️',name:'ふつうの値段',mul:1,da:0,dc:0,d:'いつもどおりの値段'},
  {k:'low',ic:'🏷️',name:'安くして売る',mul:.75,da:-20,dc:20,d:'1つあたりの値段×0.75。でも爆売れしやすい'}];
-function shipOdds(s,pr,od){const h=s.health??100;let a=30,c=20;if(h>=85){a=15;c=35;}else if(h<55){a=45;c=10;}
+function shipOdds(s,pr,od){const h=s.health??100;let a=20,c=25;if(h>=85){a=10;c=40;}else if(h<55){a=35;c=15;}
  a+=pr.da;c+=pr.dc;if(od===true){a-=10;c+=10;}else if(od===false){a+=10;}
  a=clamp(a,5,70);c=clamp(c,5,60);if(a+c>90)c=90-a;return[a,100-a-c,c];}
 function shipDay(){const S=G.S,s=G.s,before=s.sales||0,O=getOrder(S);let od=null,bonus=0;
